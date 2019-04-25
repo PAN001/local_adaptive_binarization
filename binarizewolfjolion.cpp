@@ -19,6 +19,7 @@
 // #include <cv>
 // #include <highgui>
 #include <opencv2/opencv.hpp>
+#include "timing.h"
 
 using namespace std;
 using namespace cv;
@@ -400,9 +401,16 @@ int main (int argc, char **argv)
             << "," << winy << "].\n";
     }
 
+    timespec startTime;
+    getTimeMonotonic(&startTime);
+
     // Threshold
     Mat output (input.rows, input.cols, CV_8U);
     NiblackSauvolaWolfJolion (input, output, versionCode, winx, winy, optK, 128);
+
+    timespec endTime;
+    getTimeMonotonic(&endTime);
+    cout << "=========== Time: " << diffclock(startTime, endTime) << "ms." << endl;
 
     // Write the tresholded file
     cerr << "Writing binarized image to file '" << outputname << "'.\n";
