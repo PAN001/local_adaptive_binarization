@@ -1,6 +1,3 @@
-#ifndef OPENALPR_TIMING_H
-#define OPENALPR_TIMING_H
-
 #include <iostream>
 #include <ctime>
 #include <stdint.h>
