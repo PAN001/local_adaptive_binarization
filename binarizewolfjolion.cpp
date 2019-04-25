@@ -57,228 +57,201 @@ static void usage (char *com) {
 }
 
 // *************************************************************
-// glide a window across the image and
-// *************************************************************
-// create two maps: mean and standard deviation.
-//
-// Version patched by Thibault Yohan (using opencv integral images)
+double calcLocalStats (Mat &im, Mat &im_sum, Mat &im_sum_sq, Mat &map_m, Mat &map_s, int winx, int winy) {    
+    std::cout << "========================== calcLocalStats ==========================" << std::endl;
+    timespec startTime;
+    getTimeMonotonic(&startTime);
 
+    // Mat im_sum, im_sum_sq;
+    // cv::integral(im,im_sum,im_sum_sq,CV_64F); // TODO: no need to calculated this everytime
 
-double calcLocalStats (Mat &im, Mat &map_m, Mat &map_s, int winx, int winy) {
-    Mat im_sum, im_sum_sq;
-    cv::integral(im,im_sum,im_sum_sq,CV_64F);
+    // timespec endTime;
+    // getTimeMonotonic(&endTime);
+    // cout << "cv::integral Time: " << diffclock(startTime, endTime) << "ms." << endl;
 
-	double m,s,max_s,sum,sum_sq;
-	int wxh	= winx/2;
-	int wyh	= winy/2;
-	int x_firstth= wxh;
+    // double m,s,max_s,sum,sum_sq;  
+    int wxh   = winx/2;
+    int wyh   = winy/2;
+    int x_firstth= wxh;
+    int y_lastth = im.rows-wyh-1;
     int y_firstth= wyh;
-	int y_lastth = im.rows-wyh-1;
-	double winarea = winx*winy;
+    double winarea = winx*winy;
 
-	max_s = 0;
-	for	(int j = y_firstth ; j<=y_lastth; j++){
-		sum = sum_sq = 0;
+    double max_s = 0;
 
-		// for sum array iterator pointer
-		double *sum_top_left = im_sum.ptr<double>(j - wyh);
-		double *sum_top_right = sum_top_left + winx;
-		double *sum_bottom_left = im_sum.ptr<double>(j - wyh + winy);
-		double *sum_bottom_right = sum_bottom_left + winx;
+    // cout << "  --outerloop size: " << y_lastth - y_firstth << endl;
+    // cout << "  --innerloop size: " << im.cols-winx - 1 << endl;
+    for(int j = y_firstth ; j<=y_lastth; j++) { 
+        double m,s,sum,sum_sq;  
+        sum = sum_sq = 0;
 
-		// for sum_sq array iterator pointer
-		double *sum_eq_top_left = im_sum_sq.ptr<double>(j - wyh);
-		double *sum_eq_top_right = sum_eq_top_left + winx;
-		double *sum_eq_bottom_left = im_sum_sq.ptr<double>(j - wyh + winy);
-		double *sum_eq_bottom_right = sum_eq_bottom_left + winx;
+        // sum of the window
+        sum = im_sum.at<double>(j-wyh+winy,winx) - im_sum.at<double>(j-wyh,winx) - im_sum.at<double>(j-wyh+winy,0) + im_sum.at<double>(j-wyh,0);
+        sum_sq = im_sum_sq.at<double>(j-wyh+winy,winx) - im_sum_sq.at<double>(j-wyh,winx) - im_sum_sq.at<double>(j-wyh+winy,0) + im_sum_sq.at<double>(j-wyh,0);
 
-		sum = (*sum_bottom_right + *sum_top_left) - (*sum_top_right + *sum_bottom_left);
-		sum_sq = (*sum_eq_bottom_right + *sum_eq_top_left) - (*sum_eq_top_right + *sum_eq_bottom_left);
+        m  = sum / winarea;
+        s  = sqrt ((sum_sq - m*sum)/winarea);
+        if (s > max_s) max_s = s;
 
-		m  = sum / winarea;
-		s  = sqrt ((sum_sq - m*sum)/winarea);
-		if (s > max_s) max_s = s;
+        map_m.fset(x_firstth, j, m);
+        map_s.fset(x_firstth, j, s);
 
-		float *map_m_data = map_m.ptr<float>(j) + x_firstth;
-		float *map_s_data = map_s.ptr<float>(j) + x_firstth;
-		*map_m_data++ = m;
-		*map_s_data++ = s;
+        // Shift the window, add and remove   new/old values to the histogram
+        for(int i=1 ; i <= im.cols-winx; i++) {
+            // Remove the left old column and add the right new column
+            sum -= im_sum.at<double>(j-wyh+winy,i) - im_sum.at<double>(j-wyh,i) - im_sum.at<double>(j-wyh+winy,i-1) + im_sum.at<double>(j-wyh,i-1);
+            sum += im_sum.at<double>(j-wyh+winy,i+winx) - im_sum.at<double>(j-wyh,i+winx) - im_sum.at<double>(j-wyh+winy,i+winx-1) + im_sum.at<double>(j-wyh,i+winx-1);
 
-		// Shift the window, add and remove	new/old values to the histogram
-		for	(int i=1 ; i <= im.cols-winx; i++) {
-			sum_top_left++, sum_top_right++, sum_bottom_left++, sum_bottom_right++;
+            sum_sq -= im_sum_sq.at<double>(j-wyh+winy,i) - im_sum_sq.at<double>(j-wyh,i) - im_sum_sq.at<double>(j-wyh+winy,i-1) + im_sum_sq.at<double>(j-wyh,i-1);
+            sum_sq += im_sum_sq.at<double>(j-wyh+winy,i+winx) - im_sum_sq.at<double>(j-wyh,i+winx) - im_sum_sq.at<double>(j-wyh+winy,i+winx-1) + im_sum_sq.at<double>(j-wyh,i+winx-1);
 
-			sum_eq_top_left++, sum_eq_top_right++, sum_eq_bottom_left++, sum_eq_bottom_right++;
+            m  = sum / winarea;
+            s  = sqrt ((sum_sq - m*sum)/winarea);
+            if (s > max_s) max_s = s;
 
-			sum = (*sum_bottom_right + *sum_top_left) - (*sum_top_right + *sum_bottom_left);
-			sum_sq = (*sum_eq_bottom_right + *sum_eq_top_left) - (*sum_eq_top_right + *sum_eq_bottom_left);
+            map_m.fset(i+wxh, j, m);
+            map_s.fset(i+wxh, j, s);
+        }
+    }
 
-			m  = sum / winarea;
-			s  = sqrt ((sum_sq - m*sum)/winarea);
-			if (s > max_s) max_s = s;
 
-			*map_m_data++ = m;
-			*map_s_data++ = s;
-		}
-	}
+    timespec endTime;
+    getTimeMonotonic(&endTime);
+    cout << "  --calcLocalStats Time: " << diffclock(startTime, endTime) << "ms." << endl;
 
-	return max_s;
+    return max_s;
 }
-
-
 
 /**********************************************************
- * The binarization routine
- **********************************************************/
+* The binarization routine
+**********************************************************/
+// https://pdfs.semanticscholar.org/0695/bb92a3301be9343433334692bd54c31a8233.pdf:
+// Niblack’s algorithm calculates a threshold sur- face by gliding a rectangular window across the image. 
+// The threshold T for the center pixel of the window is computed using the mean m and the variance s of the gray values in the window:
+// T = m + k · s, where k is a constant set to −0.2.
+void NiblackSauvolaWolfJolion (Mat im, Mat im_sum, Mat im_sum_sq, double min_I, double max_I, Mat output, NiblackVersion version,
+    int winx, int winy, double k, double dR) {
 
+    std::cout << "========================== NiblackSauvolaWolfJolion ==========================" << std::endl;
+    double m, s, max_s;
+    double th=0;
+    // double min_I, max_I;
+    int wxh = winx/2;
+    int wyh = winy/2;
+    int x_firstth= wxh;
+    int x_lastth = im.cols-wxh-1;
+    int y_lastth = im.rows-wyh-1;
+    int y_firstth= wyh;
+    int mx, my;
 
-void NiblackSauvolaWolfJolion (Mat im, Mat output, NiblackVersion version,
-	int winx, int winy, double k, double dR) {
+    // Create local statistics and store them in a double matrices
+    Mat map_m = Mat::zeros (im.rows, im.cols, CV_32F); // mean of the gray values in the window
+    Mat map_s = Mat::zeros (im.rows, im.cols, CV_32F); // variance of the gray values in the window
+    max_s = calcLocalStats (im, im_sum, im_sum_sq, map_m, map_s, winx, winy);
+    
+    // minMaxLoc(im, &min_I, &max_I);
+            
+    timespec startTime;
+    getTimeMonotonic(&startTime);
 
+    Mat thsurf (im.rows, im.cols, CV_32F);
+            
+    // Create the threshold surface, including border processing
+    // ----------------------------------------------------
 
-	double m, s, max_s;
-	double th=0;
-	double min_I, max_I;
-	int wxh	= winx/2;
-	int wyh	= winy/2;
-	int x_firstth= wxh;
-	int x_lastth = im.cols-wxh-1;
-	int y_lastth = im.rows-wyh-1;
-	int y_firstth= wyh;
-	// int mx, my;
+    for (int j = y_firstth ; j<=y_lastth; j++) {
+        // NORMAL, NON-BORDER AREA IN THE MIDDLE OF THE WINDOW:
+        for (int i=0 ; i <= im.cols-winx; i++) {
 
-	// Create local statistics and store them in a double matrices
-	Mat map_m = Mat::zeros (im.rows, im.cols, CV_32F);
-	Mat map_s = Mat::zeros (im.rows, im.cols, CV_32F);
-	max_s = calcLocalStats (im, map_m, map_s, winx, winy);
+            m  = map_m.fget(i+wxh, j);
+            s  = map_s.fget(i+wxh, j);
 
-	minMaxLoc(im, &min_I, &max_I);
+            // Calculate the threshold
+            switch (version) {
+                case NIBLACK:
+                    th = m + k*s;
+                    break;
 
-	Mat thsurf (im.rows, im.cols, CV_32F);
+                case SAUVOLA:
+                    th = m * (1 + k*(s/dR-1));
+                    break;
 
-	// Create the threshold surface, including border processing
-	// ----------------------------------------------------
-	for	(int j = y_firstth ; j<=y_lastth; j++) {
+                case WOLFJOLION:
+                    th = m + k * (s/max_s-1) * (m-min_I);
+                    break;
+                    
+                default:
+                    cerr << "Unknown threshold type in ImageThresholder::surfaceNiblackImproved()\n";
+                    exit (1);
+            }
+            
+            thsurf.fset(i+wxh,j,th);
 
-		float *th_surf_data = thsurf.ptr<float>(j) + wxh;
-		float *map_m_data = map_m.ptr<float>(j) + wxh;
-		float *map_s_data = map_s.ptr<float>(j) + wxh;
+            if (i==0) {
+                // LEFT BORDER
+                for (int i=0; i<=x_firstth; ++i)
+                    thsurf.fset(i,j,th);
 
-		// NORMAL, NON-BORDER AREA IN THE MIDDLE OF THE WINDOW:
-		for	(int i=0 ; i <= im.cols-winx; i++) {
-			m = *map_m_data++;
-			s = *map_s_data++;
+                // LEFT-UPPER CORNER
+                if (j==y_firstth)
+                    for (int u=0; u<y_firstth; ++u)
+                    for (int i=0; i<=x_firstth; ++i)
+                        thsurf.fset(i,u,th);
 
-    		// Calculate the threshold
-    		switch (version) {
+                // LEFT-LOWER CORNER
+                if (j==y_lastth)
+                    for (int u=y_lastth+1; u<im.rows; ++u)
+                    for (int i=0; i<=x_firstth; ++i)
+                        thsurf.fset(i,u,th);
+            }
 
-    			case NIBLACK:
-    				th = m + k*s;
-    				break;
+            // UPPER BORDER
+            if (j==y_firstth)
+                for (int u=0; u<y_firstth; ++u)
+                    thsurf.fset(i+wxh,u,th);
 
-    			case SAUVOLA:
-	    			th = m * (1 + k*(s/dR-1));
-	    			break;
+            // LOWER BORDER
+            if (j==y_lastth)
+                for (int u=y_lastth+1; u<im.rows; ++u)
+                    thsurf.fset(i+wxh,u,th);
+        }
 
-    			case WOLFJOLION:
-    				th = m + k * (s/max_s-1) * (m-min_I);
-    				break;
+        // RIGHT BORDER
+        for (int i=x_lastth; i<im.cols; ++i)
+            thsurf.fset(i,j,th);
 
-    			default:
-    				cerr << "Unknown threshold type in ImageThresholder::surfaceNiblackImproved()\n";
-    				exit (1);
-    		}
+        // RIGHT-UPPER CORNER
+        if (j==y_firstth)
+            for (int u=0; u<y_firstth; ++u)
+            for (int i=x_lastth; i<im.cols; ++i)
+                thsurf.fset(i,u,th);
 
-    		// thsurf.fset(i+wxh,j,th);
-			*th_surf_data++ = th;
+        // RIGHT-LOWER CORNER
+        if (j==y_lastth)
+            for (int u=y_lastth+1; u<im.rows; ++u)
+            for (int i=x_lastth; i<im.cols; ++i)
+                thsurf.fset(i,u,th);
+    }
+    
+    
+    for (int y=0; y<im.rows; ++y) {
+        for (int x=0; x<im.cols; ++x) 
+        {
+            if (im.uget(x,y) >= thsurf.fget(x,y))
+            {
+                output.uset(x,y,255); // set to white
+            }
+            else
+            {
+                output.uset(x,y,0);
+            }
+        }
+    }
 
-
-    		if (i==0) {
-        		// LEFT BORDER
-				float *th_surf_ptr = thsurf.ptr<float>(j);
-        		for (int i=0; i<=x_firstth; ++i)
-					*th_surf_ptr++ = th;
-
-        		// LEFT-UPPER CORNER
-        		if (j==y_firstth)
-				{
-        			for (int u=0; u<y_firstth; ++u)
-					{
-						float *th_surf_ptr = thsurf.ptr<float>(u);
-						for (int i=0; i<=x_firstth; ++i)
-        					*th_surf_ptr++ = th;
-					}
-
-				}
-
-        		// LEFT-LOWER CORNER
-        		if (j==y_lastth)
-				{
-        			for (int u=y_lastth+1; u<im.rows; ++u)
-					{
-						float *th_surf_ptr = thsurf.ptr<float>(u);
-        				for (int i=0; i<=x_firstth; ++i)
-        					*th_surf_ptr++ = th;
-					}
-				}
-    		}
-
-			// UPPER BORDER
-			if (j==y_firstth)
-				for (int u=0; u<y_firstth; ++u)
-					thsurf.fset(i+wxh,u,th);
-
-			// LOWER BORDER
-			if (j==y_lastth)
-				for (int u=y_lastth+1; u<im.rows; ++u)
-					thsurf.fset(i+wxh,u,th);
-		}
-
-		// RIGHT BORDER
-		float *th_surf_ptr = thsurf.ptr<float>(j) + x_lastth;
-		for (int i=x_lastth; i<im.cols; ++i)
-        	// thsurf.fset(i,j,th);
-			*th_surf_ptr++ = th;
-
-  		// RIGHT-UPPER CORNER
-		if (j==y_firstth)
-		{
-			for (int u=0; u<y_firstth; ++u)
-			{
-				float *th_surf_ptr = thsurf.ptr<float>(u) + x_lastth;
-				for (int i=x_lastth; i<im.cols; ++i)
-					*th_surf_ptr++ = th;
-			}
-		}
-
-		// RIGHT-LOWER CORNER
-		if (j==y_lastth)
-		{
-			for (int u=y_lastth+1; u<im.rows; ++u)
-			{
-				float *th_surf_ptr = thsurf.ptr<float>(u) + x_lastth;
-				for (int i=x_lastth; i<im.cols; ++i)
-					*th_surf_ptr++ = th;
-			}
-		}
-	}
-	cerr << "surface created" << endl;
-
-	for	(int y=0; y<im.rows; ++y)
-	{
-		unsigned char *im_data = im.ptr<unsigned char>(y);
-		float *th_surf_data = thsurf.ptr<float>(y);
-		unsigned char *output_data = output.ptr<unsigned char>(y);
-		for	(int x=0; x<im.cols; ++x)
-		{
-			*output_data = *im_data >= *th_surf_data ? 255 : 0;
-			im_data++;
-			th_surf_data++;
-			output_data++;
-		}
-	}
+    timespec endTime;
+    getTimeMonotonic(&endTime);
+    cout << "  --NiblackSauvolaWolfJolion Time (exluces calcLocalStats): " << diffclock(startTime, endTime) << "ms." << endl;
 }
-
 /**********************************************************
  * The main function
  **********************************************************/
@@ -404,9 +377,17 @@ int main (int argc, char **argv)
     timespec startTime;
     getTimeMonotonic(&startTime);
 
+    Mat im_sum, im_sum_sq;
+    integral(input, im_sum, im_sum_sq, CV_64F);
+
+    double min_I, max_I;
+    minMaxLoc(input, &min_I, &max_I);
+
     // Threshold
     Mat output (input.rows, input.cols, CV_8U);
-    NiblackSauvolaWolfJolion (input, output, versionCode, winx, winy, optK, 128);
+    // NiblackSauvolaWolfJolion (input, output, versionCode, winx, winy, optK, 128);
+    int k = 0, win=18;
+    NiblackSauvolaWolfJolion(input, im_sum, im_sum_sq, min_I, max_I, output, versionCode, win, win, 0.05 + (k * 0.35));
 
     timespec endTime;
     getTimeMonotonic(&endTime);
