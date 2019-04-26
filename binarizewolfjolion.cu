@@ -236,14 +236,14 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     unsigned char *d_input, *d_output;
     // float *d_sum, *d_sum_sq;
     float *d_map_m, *d_map_s;
-    
+
     //Allocate device memory
     SAFE_CALL(cudaMalloc<unsigned char>(&d_input,inputBytes),"CUDA Malloc Failed");
     SAFE_CALL(cudaMalloc<unsigned char>(&d_output,outputBytes),"CUDA Malloc Failed");
     // SAFE_CALL(cudaMalloc<unsigned char>(&d_sum,sumBytes),"CUDA Malloc Failed");
     // SAFE_CALL(cudaMalloc<unsigned char>(&d_sum_sq,sumSqBytes),"CUDA Malloc Failed");
-    SAFE_CALL(cudaMalloc<unsigned char>(&d_map_m,mapBytes),"CUDA Malloc Failed");
-    SAFE_CALL(cudaMalloc<unsigned char>(&d_map_s,mapBytes),"CUDA Malloc Failed");
+    SAFE_CALL(cudaMalloc<float>(&d_map_m,mapBytes),"CUDA Malloc Failed");
+    SAFE_CALL(cudaMalloc<float>(&d_map_s,mapBytes),"CUDA Malloc Failed");
 
     //Copy data from OpenCV input image to device memory
     SAFE_CALL(cudaMemcpy(d_input,input.ptr(),inputBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
