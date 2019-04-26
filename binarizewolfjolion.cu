@@ -262,7 +262,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     const dim3 grid((total_cnt + block.x - 1) / block.x, 1, 1);
 
     //Launch the binarization kernel
-    NiblackSauvolaWolfJolionCuda<<grid,block>>(d_input, min_I, max_I, d_output, winx, winy, k, max_s, input.cols, input.rows, d_map_m, d_map_s);
+    NiblackSauvolaWolfJolionCuda<<<grid,block>>>(d_input, min_I, max_I, d_output, winx, winy, k, max_s, input.cols, input.rows, d_map_m, d_map_s);
 
     //Synchronize to check for any kernel launch errors
     SAFE_CALL(cudaDeviceSynchronize(),"Kernel Launch Failed");
