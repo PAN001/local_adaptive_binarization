@@ -10,7 +10,7 @@ NVCCFLAGS=-O3 -m64 --gpu-architecture compute_61
 OBJS=binarizewolfjolion.o
 
 all:
-	g++ -I/usr/include/opencv binarizewolfjolion.cpp timing.cpp -o binarizewolfjolion `pkg-config opencv --libs` -lstdc++
+	g++ binarizewolfjolion.cpp timing.cpp -o binarizewolfjolion -L/usr/local/depot/opencv/lib64/ -lstdc++
 
 clean:
 	rm -f binarizewolfjolion
@@ -30,4 +30,3 @@ $(EXECUTABLE):
 		$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS) `pkg-config opencv --libs` -lstdc++
 
 
-g++ -m64 -O3 -Wall -o binarizewolfjolion.o -L/usr/local/depot/cuda-8.0/lib64/ -lcudart `pkg-config opencv --libs` -lstdc++
