@@ -39,23 +39,20 @@ enum NiblackVersion
 #define fget(x,y)    at<float>(y,x)
 #define fset(x,y,v)  at<float>(y,x)=v;
 
-/**********************************************************
- * Usage
- **********************************************************/
 
-static void usage (char *com) {
-	cerr << "usage: " << com << " [ -x <winx> -y <winy> -k <parameter> ] [ version ] <inputimage> <outputimage>\n\n"
-		 << "version: n   Niblack (1986)         needs white text on black background\n"
-		 << "         s   Sauvola et al. (1997)  needs black text on white background\n"
-		 << "         w   Wolf et al. (2001)     needs black text on white background\n"
-		 << "\n"
-		 << "Default version: w (Wolf et al. 2001)\n"
-		 << "\n"
-		 << "example:\n"
-		 << "       " << com << " w in.pgm out.pgm\n"
-		 << "       " << com << " in.pgm out.pgm\n"
-		 << "       " << com << " s -x 50 -y 50 -k 0.6 in.pgm out.pgm\n";
+static inline void _safe_cuda_call(cudaError err, const char* msg, const char* file_name, const int line_number)
+{
+    if(err!=cudaSuccess)
+    {
+        fprintf(stderr,"%s\n\nFile: %s\n\nLine Number: %d\n\nReason: %s\n",msg,file_name,line_number,cudaGetErrorString(err));
+        std::cin.get();
+        exit(EXIT_FAILURE);
+    }
 }
+
+#define SAFE_CALL(call,msg) _safe_cuda_call((call),(msg),__FILE__,__LINE__)
+
+
 
 // *************************************************************
 double calcLocalStats (Mat &im, Mat &im_sum, Mat &im_sum_sq, Mat &map_m, Mat &map_s, int winx, int winy) {    
@@ -332,7 +329,6 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, float* im_sum
 }
 
 void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, double k) {
-    
     Mat im_sum, im_sum_sq;
     integral(input, im_sum, im_sum_sq, CV_64F);
 
@@ -390,160 +386,4 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     SAFE_CALL(cudaFree(d_output),"CUDA Free Failed");
     SAFE_CALL(cudaFree(d_sum),"CUDA Free Failed");
     SAFE_CALL(cudaFree(d_sum_sq),"CUDA Free Failed");
-}
-/**********************************************************
- * The main function
- **********************************************************/
-
-int main()
-{
-	char version;
-	int c;
-	int winx=0, winy=0;
-	float optK=0.5;
-	bool didSpecifyK=false;
-	NiblackVersion versionCode;
-	char *inputname, *outputname, *versionstring;
-
-	cerr << "===========================================================\n"
-	     << "Christian Wolf, LIRIS Laboratory, Lyon, France.\n"
-		 << "christian.wolf@liris.cnrs.fr\n"
-		 << "Version " << BINARIZEWOLF_VERSION << endl
-		 << "===========================================================\n";
-
-	// Argument processing
-	while ((c =	getopt (argc, argv,	"x:y:k:")) != EOF) {
-
-		switch (c) {
-
-			case 'x':
-				winx = atof(optarg);
-				break;
-
-			case 'y':
-				winy = atof(optarg);
-				break;
-
-			case 'k':
-				optK = atof(optarg);
-				didSpecifyK = true;
-				break;
-
-			case '?':
-				usage (*argv);
-				cerr << "\nProblem parsing the options!\n\n";
-				exit (1);
-		}
-	}
-
-	switch(argc-optind)
-	{
-		case 3:
-			versionstring=argv[optind];
-			inputname=argv[optind+1];
-			outputname=argv[optind+2];
-			break;
-
-		case 2:
-			versionstring=(char *) "w";
-			inputname=argv[optind];
-			outputname=argv[optind+1];
-			break;
-
-		default:
-			usage (*argv);
-			exit (1);
-	}
-
-	cerr << "Adaptive binarization\n"
-		 << "Threshold calculation: ";
-
-	// Determine the method
-	version = versionstring[0];
-	switch (version)
-	{
-		case 'n':
-			versionCode = NIBLACK;
-			cerr << "Niblack (1986)\n";
-			break;
-
-		case 's':
-			versionCode = SAUVOLA;
-			cerr << "Sauvola et al. (1997)\n";
-			break;
-
-		case 'w':
-			versionCode = WOLFJOLION;
-			cerr << "Wolf and Jolion (2001)\n";
-			break;
-
-		default:
-			usage (*argv);
-			cerr  << "\nInvalid version: '" << version << "'!";
-	}
-
-
-	cerr << "parameter k=" << optK << endl;
-
-	if (!didSpecifyK)
-		cerr << "Setting k to default value " << optK << endl;
-
-
-    // Load the image in grayscale mode
-    Mat input = imread(inputname,CV_LOAD_IMAGE_GRAYSCALE);
-
-
-    if ((input.rows<=0) || (input.cols<=0)) {
-        cerr << "*** ERROR: Couldn't read input image " << inputname << endl;
-        exit(1);
-    }
-
-
-    // Treat the window size
-    if (winx==0||winy==0) {
-        cerr << "Input size: " << input.cols << "x" << input.rows << endl;
-        winy = (int) (2.0 * input.rows-1)/3;
-        winx = (int) input.cols-1 < winy ? input.cols-1 : winy;
-        // if the window is too big, than we asume that the image
-        // is not a single text box, but a document page: set
-        // the window size to a fixed constant.
-        if (winx > 100)
-            winx = winy = 40;
-        cerr << "Setting window size to [" << winx
-            << "," << winy << "].\n";
-    }
-
-    timespec startTime;
-    getTimeMonotonic(&startTime);
-    // Mat im_sum, im_sum_sq;
-    // integral(input, im_sum, im_sum_sq, CV_64F);
-
-    // timespec integralEndTime;
-    // getTimeMonotonic(&integralEndTime);
-    // cout << "  --cv::integral Time: " << diffclock(startTime, integralEndTime) << "ms." << endl;
-
-    // timespec minMaxLocStartTime;
-    // getTimeMonotonic(&minMaxLocStartTime);
-    // double min_I, max_I;
-    // minMaxLoc(input, &min_I, &max_I);
-
-    // timespec minMaxLocEndTime;
-    // getTimeMonotonic(&minMaxLocEndTime);
-    // cout << "  --cv::minMaxLoc Time: " << diffclock(minMaxLocStartTime, minMaxLocEndTime) << "ms." << endl;
-
-    // Threshold
-    Mat output (input.rows, input.cols, CV_8U);
-    // NiblackSauvolaWolfJolion (input, output, versionCode, winx, winy, optK, 128);
-    int k = 0, win=18;
-    NiblackSauvolaWolfJolionWrapper(input, output, win, win, 0.05 + (k * 0.35));
-
-    timespec endTime;
-    getTimeMonotonic(&endTime);
-    cout << "=========== Time: " << diffclock(startTime, endTime) << "ms." << endl;
-
-    // Write the tresholded file
-    cerr << "Writing binarized image to file '" << outputname << "'.\n";
-    imwrite (outputname, output);
-
-    return 0;
 }
