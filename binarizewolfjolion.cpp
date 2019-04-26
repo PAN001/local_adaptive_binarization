@@ -59,7 +59,6 @@ static void usage (char *com) {
 
 // *************************************************************
 double calcLocalStats (Mat &im, Mat &im_sum, Mat &im_sum_sq, Mat &map_m, Mat &map_s, int winx, int winy) {    
-    std::cout << "========================== calcLocalStats ==========================" << std::endl;
     timespec startTime;
     getTimeMonotonic(&startTime);
 
@@ -132,8 +131,6 @@ double calcLocalStats (Mat &im, Mat &im_sum, Mat &im_sum_sq, Mat &map_m, Mat &ma
 // T = m + k · s, where k is a constant set to −0.2.
 void NiblackSauvolaWolfJolion (Mat im, Mat im_sum, Mat im_sum_sq, double min_I, double max_I, Mat output, NiblackVersion version,
     int winx, int winy, double k, double dR=BINARIZEWOLF_DEFAULTDR) {
-
-    std::cout << "========================== NiblackSauvolaWolfJolion ==========================" << std::endl;
     double m, s, max_s;
     double th=0;
     // double min_I, max_I;
@@ -381,8 +378,18 @@ int main (int argc, char **argv)
     Mat im_sum, im_sum_sq;
     integral(input, im_sum, im_sum_sq, CV_64F);
 
+    timespec integralEndTime;
+    getTimeMonotonic(&integralEndTime);
+    cout << "  --cv::integral Time: " << diffclock(startTime, integralEndTime) << "ms." << endl;
+
+    timespec minMaxLocStartTime;
+    getTimeMonotonic(&minMaxLocStartTime);
     double min_I, max_I;
     minMaxLoc(input, &min_I, &max_I);
+
+    timespec minMaxLocEndTime;
+    getTimeMonotonic(&minMaxLocEndTime);
+    cout << "  --cv::minMaxLoc Time: " << diffclock(minMaxLocStartTime, minMaxLocEndTime) << "ms." << endl;
 
     // Threshold
     Mat output (input.rows, input.cols, CV_8U);
