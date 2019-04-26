@@ -147,7 +147,6 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
     int x_lastth = img_width-wxh-1;
     int y_lastth = img_height-wyh-1;
     int y_firstth= wyh;
-    int mx, my;
 
     // Mat thsurf (im.rows, im.cols, CV_32F);
             
@@ -193,7 +192,7 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
                 set_color(input, output, u, i+wxh, th, img_width);
 
         // LOWER BORDER
-        if (j==y_lastth)
+        if (row_idx==y_lastth)
             for (int u=y_lastth+1; u<img_height; ++u)
                 set_color(input, output, row_idx, i+wxh, th, img_width);
     }
@@ -223,9 +222,9 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     minMaxLoc(input, &min_I, &max_I);
 
     // Create local statistics and store them in a double matrices
-    Mat map_m = Mat::zeros(im.rows, im.cols, CV_32F); // mean of the gray values in the window
-    Mat map_s = Mat::zeros(im.rows, im.cols, CV_32F); // variance of the gray values in the window
-    double max_s = calcLocalStats(im, im_sum, im_sum_sq, map_m, map_s, winx, winy);
+    Mat map_m = Mat::zeros(input.rows, input.cols, CV_32F); // mean of the gray values in the window
+    Mat map_s = Mat::zeros(input.rows, input.cols, CV_32F); // variance of the gray values in the window
+    double max_s = calcLocalStats(input, im_sum, im_sum_sq, map_m, map_s, winx, winy);
 
     //Calculate total number of bytes of input and output image
     const int inputBytes = input.cols * input.rows;
