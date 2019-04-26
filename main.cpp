@@ -10,7 +10,7 @@
 using namespace std;
 using namespace cv;
 
-void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, double k)
+void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, double k);
 
 
 int main (int argc, char **argv)
