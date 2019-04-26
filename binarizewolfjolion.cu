@@ -234,8 +234,9 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     const int mapBytes = map_m.cols * map_m.rows;
 
     unsigned char *d_input, *d_output;
-    float *d_sum, *d_sum_sq;
-
+    // float *d_sum, *d_sum_sq;
+    float *d_map_m, *d_map_s;
+    
     //Allocate device memory
     SAFE_CALL(cudaMalloc<unsigned char>(&d_input,inputBytes),"CUDA Malloc Failed");
     SAFE_CALL(cudaMalloc<unsigned char>(&d_output,outputBytes),"CUDA Malloc Failed");
