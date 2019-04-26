@@ -1,10 +1,21 @@
+EXECUTABLE := binarizewolfjolion_cuda
+CU_FILES   := binarizewolfjolion.cu
 
+CXX=g++ -m64
+CXXFLAGS=-O3 -Wall
+LDFLAGS=-L/usr/local/depot/cuda-8.0/lib64/ -lcudart
+NVCC=nvcc
+NVCCFLAGS=-O3 -m64 --gpu-architecture compute_61
+OBJS=binarizewolfjolion.o
 
 all:
 	g++ -I/usr/include/opencv binarizewolfjolion.cpp timing.cpp -o binarizewolfjolion `pkg-config opencv --libs` -lstdc++
 
 clean:
 	rm -f binarizewolfjolion
+
+cuda: $(EXECUTABLE)
+
 
 test:
 	./binarizewolfjolion -k 0.6 sample.jpg _result.jpg
@@ -14,3 +25,5 @@ package:	clean
 	rm -f x.jpg
 	tar cvfz binarizewolfjolionopencv.tgz *
 
+$(EXECUTABLE):
+		$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS) `pkg-config opencv --libs` -lstdc++
