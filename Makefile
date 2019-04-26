@@ -11,7 +11,6 @@ OBJS=binarizewolfjolion.o
 
 all:
 	g++ -I/usr/include/opencv binarizewolfjolion.cpp timing.cpp -o binarizewolfjolion `pkg-config opencv --libs` -lstdc++
-	# g++ -I/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local/include/opencv binarizewolfjolion.cpp timing.cpp -o binarizewolfjolion -lstdc++
 
 clean:
 	rm -f binarizewolfjolion
