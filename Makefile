@@ -10,7 +10,8 @@ NVCCFLAGS=-O3 -m64 --gpu-architecture compute_61
 OBJS=binarizewolfjolion.o
 
 all:
-	g++ -I/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local/include/opencv binarizewolfjolion.cpp timing.cpp -o binarizewolfjolion `pkg-config opencv --libs` -lstdc++
+	g++ -I/usr/include/opencv binarizewolfjolion.cpp timing.cpp -o binarizewolfjolion `pkg-config opencv --libs` -lstdc++
+	# g++ -I/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local/include/opencv binarizewolfjolion.cpp timing.cpp -o binarizewolfjolion -lstdc++
 
 clean:
 	rm -f binarizewolfjolion
