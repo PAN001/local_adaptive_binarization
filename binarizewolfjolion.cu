@@ -163,56 +163,56 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
     // NORMAL, NON-BORDER AREA IN THE MIDDLE OF THE WINDOW:
     for (int i=0 ; i <= img_width-winx; i++) {
         float m,s;
-        m = map_m[row_idx * img_width + i + wxh]
-        s = map_s[row_idx * img_width + i + wxh]
+        m = map_m[row_idx * img_width + i + wxh];
+        s = map_s[row_idx * img_width + i + wxh];
         
         th = m + k * (s/max_s-1) * (m-min_I);
-        set_color(input, output, row_idx, i+wxh, th, img_width)
+        set_color(input, output, row_idx, i+wxh, th, img_width);
 
         if (i==0) {
             // LEFT BORDER
             for (int i=0; i<=x_firstth; ++i)
-                set_color(input, output, row_idx, i, th, img_width)
+                set_color(input, output, row_idx, i, th, img_width);
 
             // LEFT-UPPER CORNER
             if (j==y_firstth)
                 for (int u=0; u<y_firstth; ++u)
                     for (int i=0; i<=x_firstth; ++i)
-                        set_color(input, output, u, i, th, img_width)
+                        set_color(input, output, u, i, th, img_width);
 
             // LEFT-LOWER CORNER
             if (j==y_lastth)
                 for (int u=y_lastth+1; u<img_height; ++u)
                     for (int i=0; i<=x_firstth; ++i)
-                        set_color(input, output, u, i, th, img_width)
+                        set_color(input, output, u, i, th, img_width);
         }
 
         // UPPER BORDER
         if (j==y_firstth)
             for (int u=0; u<y_firstth; ++u)
-                set_color(input, output, u, i+wxh, th, img_width)
+                set_color(input, output, u, i+wxh, th, img_width);
 
         // LOWER BORDER
         if (j==y_lastth)
             for (int u=y_lastth+1; u<img_height; ++u)
-                set_color(input, output, row_idx, i+wxh, th, img_width)
+                set_color(input, output, row_idx, i+wxh, th, img_width);
     }
 
     // RIGHT BORDER
     for (int i=x_lastth; i<img_width; ++i)
-        set_color(input, output, row_idx, i, th, img_width)
+        set_color(input, output, row_idx, i, th, img_width);
 
     // RIGHT-UPPER CORNER
     if (row_idx==y_firstth)
         for (int u=0; u<y_firstth; ++u)
             for (int i=x_lastth; i<img_width; ++i)
-                set_color(input, output, u, i, th, img_width)
+                set_color(input, output, u, i, th, img_width);
 
     // RIGHT-LOWER CORNER
     if (row_idx==y_lastth)
         for (int u=y_lastth+1; u<img_height; ++u)
             for (int i=x_lastth; i<img_width; ++i)
-                set_color(input, output, u, i, th, img_width)
+                set_color(input, output, u, i, th, img_width);
 }
 
 void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, double k) {
