@@ -224,7 +224,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     // Create local statistics and store them in a double matrices
     Mat map_m = Mat::zeros(im.rows, im.cols, CV_32F); // mean of the gray values in the window
     Mat map_s = Mat::zeros(im.rows, im.cols, CV_32F); // variance of the gray values in the window
-    max_s = calcLocalStats(im, im_sum, im_sum_sq, map_m, map_s, winx, winy);
+    double max_s = calcLocalStats(im, im_sum, im_sum_sq, map_m, map_s, winx, winy);
 
     //Calculate total number of bytes of input and output image
     const int inputBytes = input.cols * input.rows;
