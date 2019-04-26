@@ -30,5 +30,6 @@ if(HAVE_CUDA AND NOT ENABLE_DYNAMIC_CUDA)
   endif()
 endif()
 
-add_executable(binarizewolfjolion main.cpp binarizewolfjolion.cu timing.cpp)
+CUDA_COMPILE(CU_O binarizewolfjolion.cu)
+add_executable(binarizewolfjolion main.cpp timing.cpp ${CU_O})
 target_link_libraries( binarizewolfjolion ${OpenCV_LIBS} )
