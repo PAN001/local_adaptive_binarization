@@ -161,7 +161,7 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, float* im_sum
         return;
 
     // NORMAL, NON-BORDER AREA IN THE MIDDLE OF THE WINDOW:
-    for (int i=0 ; i <= im.cols-winx; i++) {
+    for (int i=0 ; i <= img_width-winx; i++) {
         m = map_m[row_idx * img_width + i + wxh]
         s = map_s[row_idx * img_width + i + wxh]
         
@@ -181,7 +181,7 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, float* im_sum
 
             // LEFT-LOWER CORNER
             if (j==y_lastth)
-                for (int u=y_lastth+1; u<im.rows; ++u)
+                for (int u=y_lastth+1; u<img_height; ++u)
                     for (int i=0; i<=x_firstth; ++i)
                         set_color(input, output, u, i, th, img_width)
         }
@@ -193,7 +193,7 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, float* im_sum
 
         // LOWER BORDER
         if (j==y_lastth)
-            for (int u=y_lastth+1; u<im.rows; ++u)
+            for (int u=y_lastth+1; u<img_height; ++u)
                 set_color(input, output, row_idx, i+wxh, th, img_width)
     }
 
