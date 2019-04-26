@@ -175,20 +175,20 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
                 set_color(input, output, row_idx, i, th, img_width);
 
             // LEFT-UPPER CORNER
-            if (j==y_firstth)
+            if (row_idx==y_firstth)
                 for (int u=0; u<y_firstth; ++u)
                     for (int i=0; i<=x_firstth; ++i)
                         set_color(input, output, u, i, th, img_width);
 
             // LEFT-LOWER CORNER
-            if (j==y_lastth)
+            if (row_idx==y_lastth)
                 for (int u=y_lastth+1; u<img_height; ++u)
                     for (int i=0; i<=x_firstth; ++i)
                         set_color(input, output, u, i, th, img_width);
         }
 
         // UPPER BORDER
-        if (j==y_firstth)
+        if (row_idx==y_firstth)
             for (int u=0; u<y_firstth; ++u)
                 set_color(input, output, u, i+wxh, th, img_width);
 
