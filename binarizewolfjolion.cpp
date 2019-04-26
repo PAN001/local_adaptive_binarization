@@ -32,6 +32,7 @@ enum NiblackVersion
 };
 
 #define BINARIZEWOLF_VERSION	"2.4 (August 1st, 2014)"
+#define BINARIZEWOLF_DEFAULTDR	128
 
 #define uget(x,y)    at<unsigned char>(y,x)
 #define uset(x,y,v)  at<unsigned char>(y,x)=v;
@@ -130,7 +131,7 @@ double calcLocalStats (Mat &im, Mat &im_sum, Mat &im_sum_sq, Mat &map_m, Mat &ma
 // The threshold T for the center pixel of the window is computed using the mean m and the variance s of the gray values in the window:
 // T = m + k · s, where k is a constant set to −0.2.
 void NiblackSauvolaWolfJolion (Mat im, Mat im_sum, Mat im_sum_sq, double min_I, double max_I, Mat output, NiblackVersion version,
-    int winx, int winy, double k) {
+    int winx, int winy, double k, double dR=BINARIZEWOLF_DEFAULTDR) {
 
     std::cout << "========================== NiblackSauvolaWolfJolion ==========================" << std::endl;
     double m, s, max_s;
