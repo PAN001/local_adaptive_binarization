@@ -137,8 +137,8 @@ __device__ __inline__ void set_color(unsigned char* input, unsigned char* output
     }
 }
 
-__global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, float* im_sum, float* im_sum_sq, double min_I, double max_I, unsigned char* output,
-    int winx, int winy, double k, double max_s, int img_width, int img_height) {
+__global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I, double max_I, unsigned char* output,
+    int winx, int winy, double k, double max_s, int img_width, int img_height, float* map_m, float* map_s) {
     double th=0;
     // double min_I, max_I;
     int wxh = winx/2;
@@ -162,7 +162,7 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, float* im_sum
 
     // NORMAL, NON-BORDER AREA IN THE MIDDLE OF THE WINDOW:
     for (int i=0 ; i <= img_width-winx; i++) {
-        double m,s;
+        float m,s;
         m = map_m[row_idx * img_width + i + wxh]
         s = map_s[row_idx * img_width + i + wxh]
         
@@ -230,8 +230,9 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     //Calculate total number of bytes of input and output image
     const int inputBytes = input.cols * input.rows;
     const int outputBytes = output.cols * output.rows;
-    const int sumBytes = im_sum.cols * im_sum.rows;
-    const int sumSqBytes = im_sum_sq.cols * im_sum_sq.rows;
+    // const int sumBytes = im_sum.cols * im_sum.rows;
+    // const int sumSqBytes = im_sum_sq.cols * im_sum_sq.rows;
+    const int mapBytes = map_m.cols * map_m.rows;
 
     unsigned char *d_input, *d_output;
     float *d_sum, *d_sum_sq;
@@ -239,13 +240,18 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     //Allocate device memory
     SAFE_CALL(cudaMalloc<unsigned char>(&d_input,inputBytes),"CUDA Malloc Failed");
     SAFE_CALL(cudaMalloc<unsigned char>(&d_output,outputBytes),"CUDA Malloc Failed");
-    SAFE_CALL(cudaMalloc<unsigned char>(&d_sum,sumBytes),"CUDA Malloc Failed");
-    SAFE_CALL(cudaMalloc<unsigned char>(&d_sum_sq,sumSqBytes),"CUDA Malloc Failed");
+    // SAFE_CALL(cudaMalloc<unsigned char>(&d_sum,sumBytes),"CUDA Malloc Failed");
+    // SAFE_CALL(cudaMalloc<unsigned char>(&d_sum_sq,sumSqBytes),"CUDA Malloc Failed");
+    SAFE_CALL(cudaMalloc<unsigned char>(&d_map_m,mapBytes),"CUDA Malloc Failed");
+    SAFE_CALL(cudaMalloc<unsigned char>(&d_map_s,mapBytes),"CUDA Malloc Failed");
 
     //Copy data from OpenCV input image to device memory
     SAFE_CALL(cudaMemcpy(d_input,input.ptr(),inputBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
-    SAFE_CALL(cudaMemcpy(d_sum,im_sum.ptr(),sumBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
-    SAFE_CALL(cudaMemcpy(d_sum_sq,d_sum_sq.ptr(),sumSqBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
+    // SAFE_CALL(cudaMemcpy(d_sum,im_sum.ptr(),sumBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
+    // SAFE_CALL(cudaMemcpy(d_sum_sq,im_sum_sq.ptr(),sumSqBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
+    SAFE_CALL(cudaMemcpy(d_map_m,map_m.ptr(),mapBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
+    SAFE_CALL(cudaMemcpy(d_map_s,map_s.ptr(),mapBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
+
 
     //1-d allocation
     int wyh = winy/2;
@@ -256,7 +262,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     const dim3 grid((total_cnt + block.x - 1) / block.x, 1, 1);
 
     //Launch the binarization kernel
-    NiblackSauvolaWolfJolionCuda(d_input, d_sum, d_sum_sq, min_I, max_I, output, winx, winy, k, max_s, input.cols, input.rows)
+    NiblackSauvolaWolfJolionCuda(d_input, min_I, max_I, output, winx, winy, k, max_s, input.cols, input.rows, d_map_m, d_map_s)
 
     //Synchronize to check for any kernel launch errors
     SAFE_CALL(cudaDeviceSynchronize(),"Kernel Launch Failed");
@@ -267,6 +273,8 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     //Free the device memory
     SAFE_CALL(cudaFree(d_input),"CUDA Free Failed");
     SAFE_CALL(cudaFree(d_output),"CUDA Free Failed");
-    SAFE_CALL(cudaFree(d_sum),"CUDA Free Failed");
-    SAFE_CALL(cudaFree(d_sum_sq),"CUDA Free Failed");
+    // SAFE_CALL(cudaFree(d_sum),"CUDA Free Failed");
+    // SAFE_CALL(cudaFree(d_sum_sq),"CUDA Free Failed");
+    SAFE_CALL(cudaFree(map_m),"CUDA Free Failed");
+    SAFE_CALL(cudaFree(map_s),"CUDA Free Failed");
 }
