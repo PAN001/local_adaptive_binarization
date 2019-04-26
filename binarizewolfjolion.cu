@@ -395,7 +395,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
  * The main function
  **********************************************************/
 
-int main (int argc, char **argv)
+int main()
 {
 	char version;
 	int c;
