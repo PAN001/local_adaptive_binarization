@@ -130,7 +130,7 @@ double calcLocalStats (Mat &im, Mat &im_sum, Mat &im_sum_sq, Mat &map_m, Mat &ma
 // The threshold T for the center pixel of the window is computed using the mean m and the variance s of the gray values in the window:
 // T = m + k · s, where k is a constant set to −0.2.
 void NiblackSauvolaWolfJolion (Mat im, Mat im_sum, Mat im_sum_sq, double min_I, double max_I, Mat output, NiblackVersion version,
-    int winx, int winy, double k, double dR) {
+    int winx, int winy, double k) {
 
     std::cout << "========================== NiblackSauvolaWolfJolion ==========================" << std::endl;
     double m, s, max_s;
