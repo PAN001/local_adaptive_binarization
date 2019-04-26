@@ -162,6 +162,7 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, float* im_sum
 
     // NORMAL, NON-BORDER AREA IN THE MIDDLE OF THE WINDOW:
     for (int i=0 ; i <= img_width-winx; i++) {
+        double m,s;
         m = map_m[row_idx * img_width + i + wxh]
         s = map_s[row_idx * img_width + i + wxh]
         
