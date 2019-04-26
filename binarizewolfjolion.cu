@@ -139,7 +139,6 @@ __device__ __inline__ void set_color(unsigned char* input, unsigned char* output
 
 __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, float* im_sum, float* im_sum_sq, double min_I, double max_I, unsigned char* output,
     int winx, int winy, double k, double max_s, int img_width, int img_height) {
-    double m, s, max_s;
     double th=0;
     // double min_I, max_I;
     int wxh = winx/2;
