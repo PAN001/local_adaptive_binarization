@@ -24,9 +24,6 @@ int main (int argc, char **argv)
     inputname = "1080p.jpg";
     outputname = "output.jpg";
 
-    cerr << "Adaptive binarization\n"
-         << "Threshold calculation: ";
-
     // Load the image in grayscale mode
     Mat input = imread(inputname,CV_LOAD_IMAGE_GRAYSCALE);
 
