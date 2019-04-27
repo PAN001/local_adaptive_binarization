@@ -195,7 +195,7 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
         // LOWER BORDER
         if (row_idx==y_lastth)
             for (int u=y_lastth+1; u<img_height; ++u)
-                set_color(input, output, row_idx, i+wxh, th, width_step);
+                set_color(input, output, u, i+wxh, th, width_step);
     }
 
     // RIGHT BORDER
