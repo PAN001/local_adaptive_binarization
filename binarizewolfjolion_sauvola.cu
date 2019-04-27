@@ -137,8 +137,8 @@ __device__ __inline__ void set_color(unsigned char* input, unsigned char* output
     }
 }
 
-__global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I, double max_I, unsigned char* output,
-    int winx, int winy, double k, double max_s, int img_width, int img_height, int width_step, float* map_m, float* map_s, int rows_per_thread) {
+__global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, unsigned char* output, int winx, int winy, double k, int img_width, int img_height, int width_step, int rows_per_thread) {
+    double m, s, sum, sum_sq, foo;
     double th=0;
     // double min_I, max_I;
     int wxh = winx/2;
@@ -147,6 +147,7 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
     int x_lastth = img_width-wxh-1;
     int y_lastth = img_height-wyh-1;
     int y_firstth= wyh;
+    double winarea = winx*winy;
 
     // Mat thsurf (im.rows, im.cols, CV_32F);
             
@@ -164,12 +165,39 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
         return;
 
     for(int row_idx = row_start_idx;row_idx < row_end_idx;row_idx++) {
-        // NORMAL, NON-BORDER AREA IN THE MIDDLE OF THE WINDOW:
-        for (int i=0 ; i <= img_width-winx; i++) {
-            float m,s;
-            m = map_m[row_idx * width_step + i + wxh];
-            s = map_s[row_idx * width_step + i + wxh];
-            
+        // NORMAL, NON-BORDER AREA IN THE MIDDLE OF THE WINDOW
+
+        // Calculate the initial window at the beginning of the line
+        sum = sum_sq = 0;
+        for(int wy=0 ; wy<winy; wy++) {
+            for(int wx=0 ; wx<winx; wx++) {
+                // foo = im.uget(wx,j-wyh+wy);
+                foo = input[(row_idx-wyh+wy) * width_step + wx];
+                sum += foo;
+                sum_sq += foo*foo;
+            }
+        }
+
+        m = sum / winarea;
+        s = sqrt ((sum_sq - (sum*sum)/winarea)/winarea);
+
+        th = m * (1 + k*(s/BINARIZEWOLF_DEFAULTDR-1));
+        set_color(input, output, row_idx, 0+wxh, th, width_step);
+
+        for (int i=1 ; i <= img_width-winx; i++) {
+            // Remove the left old column and add the right new column
+            for(int wy=0; wy<winy; ++wy) {
+                // foo = im.uget(i-1,j-wyh+wy);
+                foo =  input[(row_idx-wyh+wy) * width_step + i - 1];
+                sum -= foo;
+                sum_sq -= foo*foo;
+                foo = im.uget(i+winx-1,j-wyh+wy);
+                sum += foo;
+                sum_sq += foo*foo;
+            }
+
+            m = sum / winarea;
+            s = sqrt ((sum_sq - (sum*sum)/winarea)/winarea);
             th = m * (1 + k*(s/BINARIZEWOLF_DEFAULTDR-1));
             set_color(input, output, row_idx, i+wxh, th, width_step);
 
@@ -225,27 +253,27 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     timespec startTime;
     getTimeMonotonic(&startTime);
 
-    Mat im_sum, im_sum_sq;
-    integral(input, im_sum, im_sum_sq, CV_64F);
+    // Mat im_sum, im_sum_sq;
+    // integral(input, im_sum, im_sum_sq, CV_64F);
 
-    timespec integralEndTime;
-    getTimeMonotonic(&integralEndTime);
-    cout << "  --cv::integral Time: " << diffclock(startTime, integralEndTime) << "ms." << endl;
-
-
-    timespec minMaxLocStartTime;
-    getTimeMonotonic(&minMaxLocStartTime);
-    double min_I, max_I;
-    minMaxLoc(input, &min_I, &max_I);
-    timespec minMaxLocEndTime;
-    getTimeMonotonic(&minMaxLocEndTime);
-    cout << "  --cv::minMaxLoc Time: " << diffclock(minMaxLocStartTime, minMaxLocEndTime) << "ms." << endl;
+    // timespec integralEndTime;
+    // getTimeMonotonic(&integralEndTime);
+    // cout << "  --cv::integral Time: " << diffclock(startTime, integralEndTime) << "ms." << endl;
 
 
-    // Create local statistics and store them in a double matrices
-    Mat map_m = Mat::zeros(input.rows, input.cols, CV_32F); // mean of the gray values in the window
-    Mat map_s = Mat::zeros(input.rows, input.cols, CV_32F); // variance of the gray values in the window
-    double max_s = calcLocalStats(input, im_sum, im_sum_sq, map_m, map_s, winx, winy);
+    // timespec minMaxLocStartTime;
+    // getTimeMonotonic(&minMaxLocStartTime);
+    // double min_I, max_I;
+    // minMaxLoc(input, &min_I, &max_I);
+    // timespec minMaxLocEndTime;
+    // getTimeMonotonic(&minMaxLocEndTime);
+    // cout << "  --cv::minMaxLoc Time: " << diffclock(minMaxLocStartTime, minMaxLocEndTime) << "ms." << endl;
+
+
+    // // Create local statistics and store them in a double matrices
+    // Mat map_m = Mat::zeros(input.rows, input.cols, CV_32F); // mean of the gray values in the window
+    // Mat map_s = Mat::zeros(input.rows, input.cols, CV_32F); // variance of the gray values in the window
+    // double max_s = calcLocalStats(input, im_sum, im_sum_sq, map_m, map_s, winx, winy);
 
     timespec cudaStartTime;
     getTimeMonotonic(&cudaStartTime);
@@ -257,26 +285,26 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     const int outputBytes = output.step * output.rows;
     // const int sumBytes = im_sum.cols * im_sum.rows;
     // const int sumSqBytes = im_sum_sq.cols * im_sum_sq.rows;
-    const int mapBytes = map_m.step * map_m.rows;
+    // const int mapBytes = map_m.step * map_m.rows;
 
     unsigned char *d_input, *d_output;
     // float *d_sum, *d_sum_sq;
-    float *d_map_m, *d_map_s;
+    // float *d_map_m, *d_map_s;
 
     //Allocate device memory
     SAFE_CALL(cudaMalloc<unsigned char>(&d_input,inputBytes),"CUDA Malloc Failed");
     SAFE_CALL(cudaMalloc<unsigned char>(&d_output,outputBytes),"CUDA Malloc Failed");
     // SAFE_CALL(cudaMalloc<unsigned char>(&d_sum,sumBytes),"CUDA Malloc Failed");
     // SAFE_CALL(cudaMalloc<unsigned char>(&d_sum_sq,sumSqBytes),"CUDA Malloc Failed");
-    SAFE_CALL(cudaMalloc<float>(&d_map_m,mapBytes),"CUDA Malloc Failed");
-    SAFE_CALL(cudaMalloc<float>(&d_map_s,mapBytes),"CUDA Malloc Failed");
+    // SAFE_CALL(cudaMalloc<float>(&d_map_m,mapBytes),"CUDA Malloc Failed");
+    // SAFE_CALL(cudaMalloc<float>(&d_map_s,mapBytes),"CUDA Malloc Failed");
 
     //Copy data from OpenCV input image to device memory
     SAFE_CALL(cudaMemcpy(d_input,input.ptr(),inputBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
     // SAFE_CALL(cudaMemcpy(d_sum,im_sum.ptr(),sumBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
     // SAFE_CALL(cudaMemcpy(d_sum_sq,im_sum_sq.ptr(),sumSqBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
-    SAFE_CALL(cudaMemcpy(d_map_m,map_m.ptr(),mapBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
-    SAFE_CALL(cudaMemcpy(d_map_s,map_s.ptr(),mapBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
+    // SAFE_CALL(cudaMemcpy(d_map_m,map_m.ptr(),mapBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
+    // SAFE_CALL(cudaMemcpy(d_map_s,map_s.ptr(),mapBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
 
 
     //1-d allocation
@@ -302,7 +330,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     getTimeMonotonic(&cudaKernelStartTime);
 
     //Launch the binarization kernel
-    NiblackSauvolaWolfJolionCuda<<<grid,block>>>(d_input, min_I, max_I, d_output, winx, winy, k, max_s, input.cols, input.rows, input.step, d_map_m, d_map_s, rows_per_thread);
+    NiblackSauvolaWolfJolionCuda<<<grid,block>>>(d_input, d_output, winx, winy, k, input.cols, input.rows, input.step, rows_per_thread);
 
     //Synchronize to check for any kernel launch errors
     SAFE_CALL(cudaDeviceSynchronize(),"Kernel Launch Failed");
@@ -314,9 +342,9 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     cout << "  --cuda kernel running Time: " << diffclock(cudaKernelStartTime, endTime) << "ms." << endl;
 
 
-    // //Free the device memory
-    // SAFE_CALL(cudaFree(d_input),"CUDA Free Failed");
-    // SAFE_CALL(cudaFree(d_output),"CUDA Free Failed");
+    //Free the device memory
+    SAFE_CALL(cudaFree(d_input),"CUDA Free Failed");
+    SAFE_CALL(cudaFree(d_output),"CUDA Free Failed");
     // // SAFE_CALL(cudaFree(d_sum),"CUDA Free Failed");
     // // SAFE_CALL(cudaFree(d_sum_sq),"CUDA Free Failed");
     // SAFE_CALL(cudaFree(d_map_m),"CUDA Free Failed");
