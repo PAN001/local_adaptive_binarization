@@ -1,5 +1,5 @@
 FILE(REMOVE_RECURSE
-  "CMakeFiles/cuda_compile.dir/./cuda_compile_generated_binarizewolfjolion.cu.o"
+  "CMakeFiles/cuda_compile.dir/./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o"
   "CMakeFiles/binarizewolfjolion.dir/main.cpp.o"
   "CMakeFiles/binarizewolfjolion.dir/timing.cpp.o"
   "binarizewolfjolion.pdb"
