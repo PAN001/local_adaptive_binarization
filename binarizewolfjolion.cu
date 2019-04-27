@@ -242,15 +242,15 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     cout << "  --cv::minMaxLoc Time: " << diffclock(minMaxLocStartTime, minMaxLocEndTime) << "ms." << endl;
 
 
-    timespec cudaStartTime;
-    getTimeMonotonic(&cudaStartTime);
     // Create local statistics and store them in a double matrices
     Mat map_m = Mat::zeros(input.rows, input.cols, CV_32F); // mean of the gray values in the window
     Mat map_s = Mat::zeros(input.rows, input.cols, CV_32F); // variance of the gray values in the window
     double max_s = calcLocalStats(input, im_sum, im_sum_sq, map_m, map_s, winx, winy);
 
-    cout << "input.rows: " << input.rows << endl;
-    cout << "input.step: " << input.step << endl;
+    timespec cudaStartTime;
+    getTimeMonotonic(&cudaStartTime);
+    // cout << "input.rows: " << input.rows << endl;
+    // cout << "input.step: " << input.step << endl;
 
     //Calculate total number of bytes of input and output image
     const int inputBytes = input.step * input.rows;
@@ -294,6 +294,13 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     const dim3 grid(gridX, 1, 1);
     cout << "grid.x: " << grid.x << endl;
 
+    timespec endTime;
+    getTimeMonotonic(&endTime);
+    cout << "  --cuda data preparing kernel Time: " << diffclock(cudaStartTime, endTime) << "ms." << endl;
+
+    timespec cudaKernelStartTime;
+    getTimeMonotonic(&cudaKernelStartTime);
+
     //Launch the binarization kernel
     NiblackSauvolaWolfJolionCuda<<<grid,block>>>(d_input, min_I, max_I, d_output, winx, winy, k, max_s, input.cols, input.rows, input.step, d_map_m, d_map_s, rows_per_thread);
 
@@ -303,9 +310,8 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     //Copy back data from destination device meory to OpenCV output image
     SAFE_CALL(cudaMemcpy(output.ptr(),d_output,outputBytes,cudaMemcpyDeviceToHost),"CUDA Memcpy Host To Device Failed");
 
-    timespec endTime;
     getTimeMonotonic(&endTime);
-    cout << "  --cuda kernel Time: " << diffclock(cudaStartTime, endTime) << "ms." << endl;
+    cout << "  --cuda kernel running Time: " << diffclock(cudaKernelStartTime, endTime) << "ms." << endl;
 
 
     // //Free the device memory
