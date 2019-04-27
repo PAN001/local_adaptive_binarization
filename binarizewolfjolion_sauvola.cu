@@ -276,8 +276,6 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     // Mat map_s = Mat::zeros(input.rows, input.cols, CV_32F); // variance of the gray values in the window
     // double max_s = calcLocalStats(input, im_sum, im_sum_sq, map_m, map_s, winx, winy);
 
-    timespec cudaStartTime;
-    getTimeMonotonic(&cudaStartTime);
     // cout << "input.rows: " << input.rows << endl;
     // cout << "input.step: " << input.step << endl;
 
@@ -292,6 +290,8 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     // float *d_sum, *d_sum_sq;
     // float *d_map_m, *d_map_s;
 
+    timespec cudaMallocStartTime;
+    getTimeMonotonic(&cudaMallocStartTime);
     //Allocate device memory
     SAFE_CALL(cudaMalloc<unsigned char>(&d_input,inputBytes),"CUDA Malloc Failed");
     SAFE_CALL(cudaMalloc<unsigned char>(&d_output,outputBytes),"CUDA Malloc Failed");
@@ -300,13 +300,20 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     // SAFE_CALL(cudaMalloc<float>(&d_map_m,mapBytes),"CUDA Malloc Failed");
     // SAFE_CALL(cudaMalloc<float>(&d_map_s,mapBytes),"CUDA Malloc Failed");
 
+    timespec endTime;
+    getTimeMonotonic(&endTime);
+    cout << "  --cudaMalloc Time: " << diffclock(cudaMallocStartTime, endTime) << "ms." << endl;
+
+    timespec cudaMemcpyStartTime;
+    getTimeMonotonic(&cudaMemcpyStartTime);
     //Copy data from OpenCV input image to device memory
     SAFE_CALL(cudaMemcpy(d_input,input.ptr(),inputBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
     // SAFE_CALL(cudaMemcpy(d_sum,im_sum.ptr(),sumBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
     // SAFE_CALL(cudaMemcpy(d_sum_sq,im_sum_sq.ptr(),sumSqBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
     // SAFE_CALL(cudaMemcpy(d_map_m,map_m.ptr(),mapBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
     // SAFE_CALL(cudaMemcpy(d_map_s,map_s.ptr(),mapBytes,cudaMemcpyHostToDevice),"CUDA Memcpy Host To Device Failed");
-
+    getTimeMonotonic(&endTime);
+    cout << "  --cudaMemcpy Time: " << diffclock(cudaMemcpyStartTime, endTime) << "ms." << endl;
 
     //1-d allocation
     int wyh = winy/2;
@@ -323,9 +330,8 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     const dim3 grid(gridX, 1, 1);
     // cout << "grid.x: " << grid.x << endl;
 
-    timespec endTime;
     getTimeMonotonic(&endTime);
-    cout << "  --cuda data preparing kernel Time: " << diffclock(cudaStartTime, endTime) << "ms." << endl;
+    cout << "  --cuda data preparing kernel Time: " << diffclock(cudaMallocStartTime, endTime) << "ms." << endl;
 
     timespec cudaKernelStartTime;
     getTimeMonotonic(&cudaKernelStartTime);
