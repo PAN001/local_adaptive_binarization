@@ -127,8 +127,8 @@ double calcLocalStats (Mat &im, Mat &im_sum, Mat &im_sum_sq, Mat &map_m, Mat &ma
 // The threshold T for the center pixel of the window is computed using the mean m and the variance s of the gray values in the window:
 // T = m + k · s, where k is a constant set to −0.2.
 
-__device__ __inline__ void set_color(unsigned char* input, unsigned char* output, int row_idx, int col_idx, double th, int img_width) {
-    int idx = row_idx * img_width + col_idx;
+__device__ __inline__ void set_color(unsigned char* input, unsigned char* output, int row_idx, int col_idx, double th, int width_step) {
+    int idx = row_idx * width_step + col_idx;
     if(input[idx] >= th) {
         output[idx] = 255; // set to white
     }
@@ -138,7 +138,7 @@ __device__ __inline__ void set_color(unsigned char* input, unsigned char* output
 }
 
 __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I, double max_I, unsigned char* output,
-    int winx, int winy, double k, double max_s, int img_width, int img_height, float* map_m, float* map_s) {
+    int winx, int winy, double k, double max_s, int img_width, int img_height, int width_step, float* map_m, float* map_s) {
     double th=0;
     // double min_I, max_I;
     int wxh = winx/2;
@@ -163,56 +163,56 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
     // NORMAL, NON-BORDER AREA IN THE MIDDLE OF THE WINDOW:
     for (int i=0 ; i <= img_width-winx; i++) {
         float m,s;
-        m = map_m[row_idx * img_width + i + wxh];
-        s = map_s[row_idx * img_width + i + wxh];
+        m = map_m[row_idx * width_step + i + wxh];
+        s = map_s[row_idx * width_step + i + wxh];
         
         th = m + k * (s/max_s-1) * (m-min_I);
-        set_color(input, output, row_idx, i+wxh, th, img_width);
+        set_color(input, output, row_idx, i+wxh, th, width_step);
 
         if (i==0) {
             // LEFT BORDER
             for (int i=0; i<=x_firstth; ++i)
-                set_color(input, output, row_idx, i, th, img_width);
+                set_color(input, output, row_idx, i, th, width_step);
 
             // LEFT-UPPER CORNER
             if (row_idx==y_firstth)
                 for (int u=0; u<y_firstth; ++u)
                     for (int i=0; i<=x_firstth; ++i)
-                        set_color(input, output, u, i, th, img_width);
+                        set_color(input, output, u, i, th, width_step);
 
             // LEFT-LOWER CORNER
             if (row_idx==y_lastth)
                 for (int u=y_lastth+1; u<img_height; ++u)
                     for (int i=0; i<=x_firstth; ++i)
-                        set_color(input, output, u, i, th, img_width);
+                        set_color(input, output, u, i, th, width_step);
         }
 
         // UPPER BORDER
         if (row_idx==y_firstth)
             for (int u=0; u<y_firstth; ++u)
-                set_color(input, output, u, i+wxh, th, img_width);
+                set_color(input, output, u, i+wxh, th, width_step);
 
         // LOWER BORDER
         if (row_idx==y_lastth)
             for (int u=y_lastth+1; u<img_height; ++u)
-                set_color(input, output, row_idx, i+wxh, th, img_width);
+                set_color(input, output, row_idx, i+wxh, th, width_step);
     }
 
     // RIGHT BORDER
     for (int i=x_lastth; i<img_width; ++i)
-        set_color(input, output, row_idx, i, th, img_width);
+        set_color(input, output, row_idx, i, th, width_step);
 
     // RIGHT-UPPER CORNER
     if (row_idx==y_firstth)
         for (int u=0; u<y_firstth; ++u)
             for (int i=x_lastth; i<img_width; ++i)
-                set_color(input, output, u, i, th, img_width);
+                set_color(input, output, u, i, th, width_step);
 
     // RIGHT-LOWER CORNER
     if (row_idx==y_lastth)
         for (int u=y_lastth+1; u<img_height; ++u)
             for (int i=x_lastth; i<img_width; ++i)
-                set_color(input, output, u, i, th, img_width);
+                set_color(input, output, u, i, th, width_step);
 }
 
 void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, double k) {
@@ -231,11 +231,11 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     cout << "input.step: " << input.step << endl;
 
     //Calculate total number of bytes of input and output image
-    const int inputBytes = input.cols * input.rows;
-    const int outputBytes = output.cols * output.rows;
+    const int inputBytes = input.step * input.rows;
+    const int outputBytes = output.step * output.rows;
     // const int sumBytes = im_sum.cols * im_sum.rows;
     // const int sumSqBytes = im_sum_sq.cols * im_sum_sq.rows;
-    const int mapBytes = map_m.cols * map_m.rows;
+    const int mapBytes = map_m.step * map_m.rows;
 
     unsigned char *d_input, *d_output;
     // float *d_sum, *d_sum_sq;
@@ -270,7 +270,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     cout << "grid.x: " << grid.x << endl;
 
     //Launch the binarization kernel
-    NiblackSauvolaWolfJolionCuda<<<grid,block>>>(d_input, min_I, max_I, d_output, winx, winy, k, max_s, input.cols, input.rows, d_map_m, d_map_s);
+    NiblackSauvolaWolfJolionCuda<<<grid,block>>>(d_input, min_I, max_I, d_output, winx, winy, k, max_s, input.cols, input.rows, input.step, d_map_m, d_map_s);
 
     //Synchronize to check for any kernel launch errors
     SAFE_CALL(cudaDeviceSynchronize(),"Kernel Launch Failed");
