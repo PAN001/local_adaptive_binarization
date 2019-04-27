@@ -20,7 +20,8 @@ int main (int argc, char **argv)
     int winx=0, winy=0;
     float optK=0.5;
     char *inputname, *outputname, *versionstring;
-    inputname = "plate.jpg";
+    // inputname = "plate.jpg";
+    inputname = "1080p.jpeg"
     outputname = "output.jpg";
 
     cerr << "Adaptive binarization\n"
