@@ -138,7 +138,7 @@ __device__ __inline__ void set_color(unsigned char* input, unsigned char* output
 }
 
 __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I, double max_I, unsigned char* output,
-    int winx, int winy, double k, double max_s, int img_width, int img_height, int width_step, float* map_m, float* map_s) {
+    int winx, int winy, double k, double max_s, int img_width, int img_height, int width_step, float* map_m, float* map_s, int rows_per_thread) {
     double th=0;
     // double min_I, max_I;
     int wxh = winx/2;
@@ -153,66 +153,69 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
     // Create the threshold surface, including border processing
     // ----------------------------------------------------
 
-    int row_idx = blockIdx.x * blockDim.x + threadIdx.x; // row index
-    printf("row_idx: %d\n", row_idx);
-    row_idx += y_firstth;
+    int row_start_idx = blockIdx.x * blockDim.x + threadIdx.x; // row index
+    printf("row_start_idx: %d\n", row_start_idx);
+    row_start_idx += y_firstth;
+    int row_end_idx = row_start_idx + rows_per_thread;
 
-    if(row_idx > y_lastth)
+    if(row_end_idx > y_lastth)
         return;
+    
+    for(int row_idx = row_start_idx;row_idx < row_end_idx;row_idx++) {
+        // NORMAL, NON-BORDER AREA IN THE MIDDLE OF THE WINDOW:
+        for (int i=0 ; i <= img_width-winx; i++) {
+            float m,s;
+            m = map_m[row_idx * width_step + i + wxh];
+            s = map_s[row_idx * width_step + i + wxh];
+            
+            th = m + k * (s/max_s-1) * (m-min_I);
+            set_color(input, output, row_idx, i+wxh, th, width_step);
 
-    // NORMAL, NON-BORDER AREA IN THE MIDDLE OF THE WINDOW:
-    for (int i=0 ; i <= img_width-winx; i++) {
-        float m,s;
-        m = map_m[row_idx * width_step + i + wxh];
-        s = map_s[row_idx * width_step + i + wxh];
-        
-        th = m + k * (s/max_s-1) * (m-min_I);
-        set_color(input, output, row_idx, i+wxh, th, width_step);
+            if (i==0) {
+                // LEFT BORDER
+                for (int i=0; i<=x_firstth; ++i)
+                    set_color(input, output, row_idx, i, th, width_step);
 
-        if (i==0) {
-            // LEFT BORDER
-            for (int i=0; i<=x_firstth; ++i)
-                set_color(input, output, row_idx, i, th, width_step);
+                // LEFT-UPPER CORNER
+                if (row_idx==y_firstth)
+                    for (int u=0; u<y_firstth; ++u)
+                        for (int i=0; i<=x_firstth; ++i)
+                            set_color(input, output, u, i, th, width_step);
 
-            // LEFT-UPPER CORNER
+                // LEFT-LOWER CORNER
+                if (row_idx==y_lastth)
+                    for (int u=y_lastth+1; u<img_height; ++u)
+                        for (int i=0; i<=x_firstth; ++i)
+                            set_color(input, output, u, i, th, width_step);
+            }
+
+            // UPPER BORDER
             if (row_idx==y_firstth)
                 for (int u=0; u<y_firstth; ++u)
-                    for (int i=0; i<=x_firstth; ++i)
-                        set_color(input, output, u, i, th, width_step);
+                    set_color(input, output, u, i+wxh, th, width_step);
 
-            // LEFT-LOWER CORNER
+            // LOWER BORDER
             if (row_idx==y_lastth)
                 for (int u=y_lastth+1; u<img_height; ++u)
-                    for (int i=0; i<=x_firstth; ++i)
-                        set_color(input, output, u, i, th, width_step);
+                    set_color(input, output, u, i+wxh, th, width_step);
         }
 
-        // UPPER BORDER
+        // RIGHT BORDER
+        for (int i=x_lastth; i<img_width; ++i)
+            set_color(input, output, row_idx, i, th, width_step);
+
+        // RIGHT-UPPER CORNER
         if (row_idx==y_firstth)
             for (int u=0; u<y_firstth; ++u)
-                set_color(input, output, u, i+wxh, th, width_step);
+                for (int i=x_lastth; i<img_width; ++i)
+                    set_color(input, output, u, i, th, width_step);
 
-        // LOWER BORDER
+        // RIGHT-LOWER CORNER
         if (row_idx==y_lastth)
             for (int u=y_lastth+1; u<img_height; ++u)
-                set_color(input, output, u, i+wxh, th, width_step);
+                for (int i=x_lastth; i<img_width; ++i)
+                    set_color(input, output, u, i, th, width_step);
     }
-
-    // RIGHT BORDER
-    for (int i=x_lastth; i<img_width; ++i)
-        set_color(input, output, row_idx, i, th, width_step);
-
-    // RIGHT-UPPER CORNER
-    if (row_idx==y_firstth)
-        for (int u=0; u<y_firstth; ++u)
-            for (int i=x_lastth; i<img_width; ++i)
-                set_color(input, output, u, i, th, width_step);
-
-    // RIGHT-LOWER CORNER
-    if (row_idx==y_lastth)
-        for (int u=y_lastth+1; u<img_height; ++u)
-            for (int i=x_lastth; i<img_width; ++i)
-                set_color(input, output, u, i, th, width_step);
 }
 
 void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, double k) {
@@ -262,15 +265,16 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     int y_lastth = input.rows-wyh-1;
     int y_firstth= wyh;
     int total_cnt = y_lastth - y_firstth + 1;
+    int rows_per_thread = 8;
     cout << "total_cnt: " << total_cnt << endl;
-    const dim3 block(32, 1, 1);
+    const dim3 block(32 / rows_per_thread, 1, 1);
     cout << "block.x: " << block.x << endl;
     int gridX = (total_cnt + block.x - 1) / block.x;
     const dim3 grid(gridX, 1, 1);
     cout << "grid.x: " << grid.x << endl;
 
     //Launch the binarization kernel
-    NiblackSauvolaWolfJolionCuda<<<grid,block>>>(d_input, min_I, max_I, d_output, winx, winy, k, max_s, input.cols, input.rows, input.step, d_map_m, d_map_s);
+    NiblackSauvolaWolfJolionCuda<<<grid,block>>>(d_input, min_I, max_I, d_output, winx, winy, k, max_s, input.cols, input.rows, input.step, d_map_m, d_map_s, rows_per_thread);
 
     //Synchronize to check for any kernel launch errors
     SAFE_CALL(cudaDeviceSynchronize(),"Kernel Launch Failed");
