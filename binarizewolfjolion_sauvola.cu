@@ -191,7 +191,8 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, unsigned char
                 foo =  input[(row_idx-wyh+wy) * width_step + i - 1];
                 sum -= foo;
                 sum_sq -= foo*foo;
-                foo = im.uget(i+winx-1,j-wyh+wy);
+                // foo = im.uget(i+winx-1,j-wyh+wy);
+                foo =  input[(row_idx-wyh+wy) * width_step + i + winx - 1];
                 sum += foo;
                 sum_sq += foo*foo;
             }
