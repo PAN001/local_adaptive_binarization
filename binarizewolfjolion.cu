@@ -261,8 +261,8 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     const dim3 block(128, 1, 1);
     cout << "block.x: " << block.x << endl;
     int gridX = (total_cnt + block.x - 1) / block.x;
-    cout << "grid.x: " << grid.x << endl;
     const dim3 grid(gridX, 1, 1);
+    cout << "grid.x: " << grid.x << endl;
 
     //Launch the binarization kernel
     NiblackSauvolaWolfJolionCuda<<<grid,block>>>(d_input, min_I, max_I, d_output, winx, winy, k, max_s, input.cols, input.rows, d_map_m, d_map_s);
