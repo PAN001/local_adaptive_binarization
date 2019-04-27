@@ -154,9 +154,8 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
     // ----------------------------------------------------
 
     int row_idx = blockIdx.x * blockDim.x + threadIdx.x; // row index
-    row_idx += y_firstth;
-
     printf("row_idx: %d\n", row_idx);
+    row_idx += y_firstth;
 
     if(row_idx > y_lastth)
         return;
