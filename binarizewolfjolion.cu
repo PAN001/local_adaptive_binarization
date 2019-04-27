@@ -221,12 +221,29 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
 }
 
 void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, double k) {
+
+    timespec startTime;
+    getTimeMonotonic(&startTime);
+
     Mat im_sum, im_sum_sq;
     integral(input, im_sum, im_sum_sq, CV_64F);
 
+    timespec integralEndTime;
+    getTimeMonotonic(&integralEndTime);
+    cout << "  --cv::integral Time: " << diffclock(startTime, integralEndTime) << "ms." << endl;
+
+
+    timespec minMaxLocStartTime;
+    getTimeMonotonic(&minMaxLocStartTime);
     double min_I, max_I;
     minMaxLoc(input, &min_I, &max_I);
+    timespec minMaxLocEndTime;
+    getTimeMonotonic(&minMaxLocEndTime);
+    cout << "  --cv::minMaxLoc Time: " << diffclock(minMaxLocStartTime, minMaxLocEndTime) << "ms." << endl;
 
+
+    timespec cudaStartTime;
+    getTimeMonotonic(&cudaStartTime);
     // Create local statistics and store them in a double matrices
     Mat map_m = Mat::zeros(input.rows, input.cols, CV_32F); // mean of the gray values in the window
     Mat map_s = Mat::zeros(input.rows, input.cols, CV_32F); // variance of the gray values in the window
@@ -285,6 +302,11 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
 
     //Copy back data from destination device meory to OpenCV output image
     SAFE_CALL(cudaMemcpy(output.ptr(),d_output,outputBytes,cudaMemcpyDeviceToHost),"CUDA Memcpy Host To Device Failed");
+
+    timespec endTime;
+    getTimeMonotonic(&endTime);
+    cout << "  --cuda kernel Time: " << diffclock(cudaStartTime, endTime) << "ms." << endl;
+
 
     // //Free the device memory
     // SAFE_CALL(cudaFree(d_input),"CUDA Free Failed");
