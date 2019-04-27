@@ -251,6 +251,8 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, unsigned char
 
 void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, double k) {
 
+    cudaFree(0);
+
     timespec startTime;
     getTimeMonotonic(&startTime);
 
