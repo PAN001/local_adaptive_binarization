@@ -250,8 +250,7 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, unsigned char
 }
 
 void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, double k) {
-
-    cudaFree(0);
+    cudaFree(0); // manually trigger creation of the context
 
     timespec startTime;
     getTimeMonotonic(&startTime);
@@ -324,9 +323,9 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     int y_firstth= wyh;
     // cout << "y_firstth: " << y_firstth << endl;
     int total_cnt = y_lastth - y_firstth + 1;
-    int rows_per_thread = 32;
+    int rows_per_thread = 8;
     // cout << "total_cnt: " << total_cnt << endl;
-    const dim3 block(256 / rows_per_thread, 1, 1);
+    const dim3 block(32 / rows_per_thread, 1, 1);
     // cout << "block.x: " << block.x << endl;
     int gridX = (total_cnt + block.x * rows_per_thread - 1) / (block.x * rows_per_thread);
     const dim3 grid(gridX, 1, 1);

@@ -32,42 +32,48 @@ int main (int argc, char **argv)
         exit(1);
     }
 
-    timespec startTime;
-    getTimeMonotonic(&startTime);
-    // Mat im_sum, im_sum_sq;
-    // integral(input, im_sum, im_sum_sq, CV_64F);
+    int N = 5;
+    for(int i = 0;i < N;i++) {
+        timespec startTime;
+        getTimeMonotonic(&startTime);
+        // Mat im_sum, im_sum_sq;
+        // integral(input, im_sum, im_sum_sq, CV_64F);
 
-    // timespec integralEndTime;
-    // getTimeMonotonic(&integralEndTime);
-    // cout << "  --cv::integral Time: " << diffclock(startTime, integralEndTime) << "ms." << endl;
+        // timespec integralEndTime;
+        // getTimeMonotonic(&integralEndTime);
+        // cout << "  --cv::integral Time: " << diffclock(startTime, integralEndTime) << "ms." << endl;
 
-    // timespec minMaxLocStartTime;
-    // getTimeMonotonic(&minMaxLocStartTime);
-    // double min_I, max_I;
-    // minMaxLoc(input, &min_I, &max_I);
+        // timespec minMaxLocStartTime;
+        // getTimeMonotonic(&minMaxLocStartTime);
+        // double min_I, max_I;
+        // minMaxLoc(input, &min_I, &max_I);
 
-    // timespec minMaxLocEndTime;
-    // getTimeMonotonic(&minMaxLocEndTime);
-    // cout << "  --cv::minMaxLoc Time: " << diffclock(minMaxLocStartTime, minMaxLocEndTime) << "ms." << endl;
+        // timespec minMaxLocEndTime;
+        // getTimeMonotonic(&minMaxLocEndTime);
+        // cout << "  --cv::minMaxLoc Time: " << diffclock(minMaxLocStartTime, minMaxLocEndTime) << "ms." << endl;
 
-    // Threshold
-    Mat output (input.rows, input.cols, CV_8U);
-    // // WolfJolion
-    // int k = 0, win=18;
-    // double WolfJolion_k = 0.05 + (k * 0.35);
+        // Threshold
+        Mat output (input.rows, input.cols, CV_8U);
+        // // WolfJolion
+        // int k = 0, win=18;
+        // double WolfJolion_k = 0.05 + (k * 0.35);
 
-    // Sauvola
-    int k = 1, win = 12;
-    double sauvola_k = 0.18 * k;
-    NiblackSauvolaWolfJolionWrapper(input, output, win, win, sauvola_k);
+        // Sauvola
+        int k = 1, win = 12;
+        double sauvola_k = 0.18 * k;
+        NiblackSauvolaWolfJolionWrapper(input, output, win, win, sauvola_k);
 
-    timespec endTime;
-    getTimeMonotonic(&endTime);
-    cout << "=========== Total time: " << diffclock(startTime, endTime) << "ms." << endl;
+        timespec endTime;
+        getTimeMonotonic(&endTime);
+        cout << "=========== Total time: " << diffclock(startTime, endTime) << "ms." << endl;
 
-    // Write the tresholded file
-    cerr << "Writing binarized image to file '" << outputname << "'.\n";
-    imwrite (outputname, output);
+        // Write the tresholded file
+        // cerr << "Writing binarized image to file '" << outputname << "'.\n";
+        imwrite (outputname, output);
+
+        cout << "" << endl;
+        cout << "" << endl;
+    }
 
     return 0;
 }
