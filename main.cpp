@@ -21,7 +21,7 @@ int main (int argc, char **argv)
     float optK=0.5;
     char *inputname, *outputname, *versionstring;
     // inputname = "plate.jpg";
-    inputname = "1080p.jpeg"
+    inputname = "1080p.jpg"
     outputname = "output.jpg";
 
     cerr << "Adaptive binarization\n"
