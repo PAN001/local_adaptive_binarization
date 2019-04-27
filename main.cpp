@@ -26,28 +26,12 @@ int main (int argc, char **argv)
     cerr << "Adaptive binarization\n"
          << "Threshold calculation: ";
 
-    cerr << "parameter k=" << optK << endl;
-
     // Load the image in grayscale mode
     Mat input = imread(inputname,CV_LOAD_IMAGE_GRAYSCALE);
 
     if ((input.rows<=0) || (input.cols<=0)) {
         cerr << "*** ERROR: Couldn't read input image " << inputname << endl;
         exit(1);
-    }
-
-    // Treat the window size
-    if (winx==0||winy==0) {
-        cerr << "Input size: " << input.cols << "x" << input.rows << endl;
-        winy = (int) (2.0 * input.rows-1)/3;
-        winx = (int) input.cols-1 < winy ? input.cols-1 : winy;
-        // if the window is too big, than we asume that the image
-        // is not a single text box, but a document page: set
-        // the window size to a fixed constant.
-        if (winx > 100)
-            winx = winy = 40;
-        cerr << "Setting window size to [" << winx
-            << "," << winy << "].\n";
     }
 
     timespec startTime;
