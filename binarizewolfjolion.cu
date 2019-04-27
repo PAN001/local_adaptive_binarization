@@ -159,7 +159,7 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
     row_start_idx += y_firstth;
     int row_end_idx = row_start_idx + rows_per_thread;
 
-    if(row_end_idx > y_lastth)
+    if(row_end_idx - 1 > y_lastth)
         return;
 
     for(int row_idx = row_start_idx;row_idx < row_end_idx;row_idx++) {
