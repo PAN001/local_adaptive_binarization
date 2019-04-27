@@ -154,13 +154,14 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
     // ----------------------------------------------------
 
     int row_start_idx = blockIdx.x * blockDim.x + threadIdx.x; // row index
-    printf("row_start_idx: %d\n", row_start_idx);
+    // printf("row_start_idx: %d\n", row_start_idx);
+    row_start_idx *= rows_per_thread;
     row_start_idx += y_firstth;
     int row_end_idx = row_start_idx + rows_per_thread;
 
     if(row_end_idx > y_lastth)
         return;
-    
+
     for(int row_idx = row_start_idx;row_idx < row_end_idx;row_idx++) {
         // NORMAL, NON-BORDER AREA IN THE MIDDLE OF THE WINDOW:
         for (int i=0 ; i <= img_width-winx; i++) {
