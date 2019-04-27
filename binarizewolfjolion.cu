@@ -228,7 +228,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     double max_s = calcLocalStats(input, im_sum, im_sum_sq, map_m, map_s, winx, winy);
 
     cout << "input.rows: " << input.rows << endl;
-    cout << "input.steps: " << input.steps << endl;
+    cout << "input.step: " << input.step << endl;
 
     //Calculate total number of bytes of input and output image
     const int inputBytes = input.cols * input.rows;
