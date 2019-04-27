@@ -154,7 +154,7 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
     // ----------------------------------------------------
 
     int row_start_idx = blockIdx.x * blockDim.x + threadIdx.x; // row index
-    // printf("row_start_idx: %d\n", row_start_idx);
+    printf("raw row_start_idx: %d\n", row_start_idx);
     row_start_idx *= rows_per_thread;
     row_start_idx += y_firstth;
     int row_end_idx = row_start_idx + rows_per_thread;
@@ -270,7 +270,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     cout << "total_cnt: " << total_cnt << endl;
     const dim3 block(32 / rows_per_thread, 1, 1);
     cout << "block.x: " << block.x << endl;
-    int gridX = (total_cnt + block.x - 1) / block.x;
+    int gridX = (total_cnt + block.x - 1) / (block.x * rows_per_thread);
     const dim3 grid(gridX, 1, 1);
     cout << "grid.x: " << grid.x << endl;
 
