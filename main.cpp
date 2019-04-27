@@ -63,7 +63,7 @@ int main (int argc, char **argv)
 
     timespec endTime;
     getTimeMonotonic(&endTime);
-    cout << "=========== Time: " << diffclock(startTime, endTime) << "ms." << endl;
+    cout << "=========== Total time: " << diffclock(startTime, endTime) << "ms." << endl;
 
     // Write the tresholded file
     cerr << "Writing binarized image to file '" << outputname << "'.\n";
