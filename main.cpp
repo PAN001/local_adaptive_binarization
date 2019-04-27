@@ -55,9 +55,14 @@ int main (int argc, char **argv)
 
     // Threshold
     Mat output (input.rows, input.cols, CV_8U);
-    // NiblackSauvolaWolfJolion (input, output, versionCode, winx, winy, optK, 128);
-    int k = 0, win=18;
-    NiblackSauvolaWolfJolionWrapper(input, output, win, win, 0.05 + (k * 0.35));
+    // // WolfJolion
+    // int k = 0, win=18;
+    // double WolfJolion_k = 0.05 + (k * 0.35);
+
+    // Sauvola
+    int k = 1, win = 12;
+    double sauvola_k = 0.18 * k;
+    NiblackSauvolaWolfJolionWrapper(input, output, win, win, sauvola_k);
 
     timespec endTime;
     getTimeMonotonic(&endTime);
