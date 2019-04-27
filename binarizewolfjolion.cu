@@ -154,7 +154,7 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, double min_I,
     // ----------------------------------------------------
 
     int row_start_idx = blockIdx.x * blockDim.x + threadIdx.x; // row index
-    printf("raw row_start_idx: %d\n", row_start_idx);
+    // printf("raw row_start_idx: %d\n", row_start_idx);
     row_start_idx *= rows_per_thread;
     row_start_idx += y_firstth;
     int row_end_idx = row_start_idx + rows_per_thread;
@@ -286,11 +286,11 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     //Copy back data from destination device meory to OpenCV output image
     SAFE_CALL(cudaMemcpy(output.ptr(),d_output,outputBytes,cudaMemcpyDeviceToHost),"CUDA Memcpy Host To Device Failed");
 
-    //Free the device memory
-    SAFE_CALL(cudaFree(d_input),"CUDA Free Failed");
-    SAFE_CALL(cudaFree(d_output),"CUDA Free Failed");
-    // SAFE_CALL(cudaFree(d_sum),"CUDA Free Failed");
-    // SAFE_CALL(cudaFree(d_sum_sq),"CUDA Free Failed");
-    SAFE_CALL(cudaFree(d_map_m),"CUDA Free Failed");
-    SAFE_CALL(cudaFree(d_map_s),"CUDA Free Failed");
+    // //Free the device memory
+    // SAFE_CALL(cudaFree(d_input),"CUDA Free Failed");
+    // SAFE_CALL(cudaFree(d_output),"CUDA Free Failed");
+    // // SAFE_CALL(cudaFree(d_sum),"CUDA Free Failed");
+    // // SAFE_CALL(cudaFree(d_sum_sq),"CUDA Free Failed");
+    // SAFE_CALL(cudaFree(d_map_m),"CUDA Free Failed");
+    // SAFE_CALL(cudaFree(d_map_s),"CUDA Free Failed");
 }
