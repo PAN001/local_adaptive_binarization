@@ -358,4 +358,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     // // SAFE_CALL(cudaFree(d_sum_sq),"CUDA Free Failed");
     // SAFE_CALL(cudaFree(d_map_m),"CUDA Free Failed");
     // SAFE_CALL(cudaFree(d_map_s),"CUDA Free Failed");
+
+    getTimeMonotonic(&endTime);
+    cout << "=========== Total Time (excluding CUDA context creation): " << diffclock(startTime, endTime) << "ms." << endl;
 }
