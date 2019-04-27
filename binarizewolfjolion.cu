@@ -282,17 +282,17 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     //1-d allocation
     int wyh = winy/2;
     int y_lastth = input.rows-wyh-1;
-    cout << "y_lastth: " << y_lastth << endl;
+    // cout << "y_lastth: " << y_lastth << endl;
     int y_firstth= wyh;
-    cout << "y_firstth: " << y_firstth << endl;
+    // cout << "y_firstth: " << y_firstth << endl;
     int total_cnt = y_lastth - y_firstth + 1;
     int rows_per_thread = 8;
-    cout << "total_cnt: " << total_cnt << endl;
+    // cout << "total_cnt: " << total_cnt << endl;
     const dim3 block(32 / rows_per_thread, 1, 1);
-    cout << "block.x: " << block.x << endl;
+    // cout << "block.x: " << block.x << endl;
     int gridX = (total_cnt + block.x * rows_per_thread - 1) / (block.x * rows_per_thread);
     const dim3 grid(gridX, 1, 1);
-    cout << "grid.x: " << grid.x << endl;
+    // cout << "grid.x: " << grid.x << endl;
 
     timespec endTime;
     getTimeMonotonic(&endTime);
