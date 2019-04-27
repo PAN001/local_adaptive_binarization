@@ -258,7 +258,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     int y_lastth = input.rows-wyh-1;
     int y_firstth= wyh;
     int total_cnt = y_lastth - y_firstth + 1;
-    const dim3 block(256, 1, 1);
+    const dim3 block(128, 1, 1);
     const dim3 grid((total_cnt + block.x - 1) / block.x, 1, 1);
 
     //Launch the binarization kernel

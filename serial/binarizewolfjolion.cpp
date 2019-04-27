@@ -69,7 +69,6 @@ double calcLocalStats (Mat &im, Mat &im_sum, Mat &im_sum_sq, Mat &map_m, Mat &ma
     // getTimeMonotonic(&endTime);
     // cout << "cv::integral Time: " << diffclock(startTime, endTime) << "ms." << endl;
 
-    double m,s,max_s,sum,sum_sq;  
     int wxh   = winx/2;
     int wyh   = winy/2;
     int x_firstth= wxh;
