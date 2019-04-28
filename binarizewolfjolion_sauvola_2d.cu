@@ -193,19 +193,19 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, unsigned char
     if (col_idx==0) {
         // LEFT BORDER
         for (int i=0; i<=x_firstth; ++i)
-            thsurf.fset(i,j,th);
+            set_color(input, output, row_idx, i, th, width_step);
 
         // LEFT-UPPER CORNER
-        if (j==y_firstth)
+        if (row_idx==y_firstth)
             for (int u=0; u<y_firstth; ++u)
-            for (int i=0; i<=x_firstth; ++i)
-                thsurf.fset(i,u,th);
+                for (int i=0; i<=x_firstth; ++i)
+                    set_color(input, output, u, i, th, width_step);
 
         // LEFT-LOWER CORNER
-        if (j==y_lastth)
-            for (int u=y_lastth+1; u<im.rows; ++u)
-            for (int i=0; i<=x_firstth; ++i)
-                thsurf.fset(i,u,th);
+        if (row_idx==y_lastth)
+            for (int u=y_lastth+1; u<img_height; ++u)
+                for (int i=0; i<=x_firstth; ++i)
+                    set_color(input, output, u, i, th, width_step);
     }
 
     // UPPER BORDER
