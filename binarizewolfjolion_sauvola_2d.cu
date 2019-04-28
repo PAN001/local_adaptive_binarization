@@ -190,32 +190,49 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, unsigned char
     set_color(input, output, row_idx, 0+wxh, th, width_step);
 
 
+    if (col_idx==0) {
+        // LEFT BORDER
+        for (int i=0; i<=x_firstth; ++i)
+            thsurf.fset(i,j,th);
+
+        // LEFT-UPPER CORNER
+        if (j==y_firstth)
+            for (int u=0; u<y_firstth; ++u)
+            for (int i=0; i<=x_firstth; ++i)
+                thsurf.fset(i,u,th);
+
+        // LEFT-LOWER CORNER
+        if (j==y_lastth)
+            for (int u=y_lastth+1; u<im.rows; ++u)
+            for (int i=0; i<=x_firstth; ++i)
+                thsurf.fset(i,u,th);
+    }
 
     // UPPER BORDER
     if (row_idx==y_firstth)
         for (int u=0; u<y_firstth; ++u)
-            set_color(input, output, u, i+wxh, th, width_step);
+            set_color(input, output, u, col_idx+wxh, th, width_step);
 
     // LOWER BORDER
     if (row_idx==y_lastth)
         for (int u=y_lastth+1; u<img_height; ++u)
-            set_color(input, output, u, i+wxh, th, width_step);
+            set_color(input, output, u, col_idx+wxh, th, width_step);
 
     // RIGHT BORDER
     for (int i=x_lastth; i<img_width; ++i)
-        set_color(input, output, row_idx, i, th, width_step);
+        set_color(input, output, row_idx, col_idx, th, width_step);
 
     // RIGHT-UPPER CORNER
     if (row_idx==y_firstth)
         for (int u=0; u<y_firstth; ++u)
             for (int i=x_lastth; i<img_width; ++i)
-                set_color(input, output, u, i, th, width_step);
+                set_color(input, output, u, col_idx, th, width_step);
 
     // RIGHT-LOWER CORNER
     if (row_idx==y_lastth)
         for (int u=y_lastth+1; u<img_height; ++u)
             for (int i=x_lastth; i<img_width; ++i)
-                set_color(input, output, u, i, th, width_step);
+                set_color(input, output, u, col_idx, th, width_step);
 }
 
 void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, double k) {

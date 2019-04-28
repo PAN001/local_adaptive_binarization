@@ -184,6 +184,22 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, unsigned char
         th = m * (1 + k*(s/BINARIZEWOLF_DEFAULTDR-1));
         set_color(input, output, row_idx, 0+wxh, th, width_step);
 
+        // LEFT BORDER
+        for (int i=0; i<=x_firstth; ++i)
+            set_color(input, output, row_idx, i, th, width_step);
+
+        // LEFT-UPPER CORNER
+        if (row_idx==y_firstth)
+            for (int u=0; u<y_firstth; ++u)
+                for (int i=0; i<=x_firstth; ++i)
+                    set_color(input, output, u, i, th, width_step);
+
+        // LEFT-LOWER CORNER
+        if (row_idx==y_lastth)
+            for (int u=y_lastth+1; u<img_height; ++u)
+                for (int i=0; i<=x_firstth; ++i)
+                    set_color(input, output, u, i, th, width_step);
+
         for (int i=1 ; i <= img_width-winx; i++) {
             // Remove the left old column and add the right new column
             for(int wy=0; wy<winy; ++wy) {
@@ -201,24 +217,6 @@ __global__ void NiblackSauvolaWolfJolionCuda(unsigned char* input, unsigned char
             s = sqrt ((sum_sq - (sum*sum)/winarea)/winarea);
             th = m * (1 + k*(s/BINARIZEWOLF_DEFAULTDR-1));
             set_color(input, output, row_idx, i+wxh, th, width_step);
-
-            if (i==0) {
-                // LEFT BORDER
-                for (int i=0; i<=x_firstth; ++i)
-                    set_color(input, output, row_idx, i, th, width_step);
-
-                // LEFT-UPPER CORNER
-                if (row_idx==y_firstth)
-                    for (int u=0; u<y_firstth; ++u)
-                        for (int i=0; i<=x_firstth; ++i)
-                            set_color(input, output, u, i, th, width_step);
-
-                // LEFT-LOWER CORNER
-                if (row_idx==y_lastth)
-                    for (int u=y_lastth+1; u<img_height; ++u)
-                        for (int i=0; i<=x_firstth; ++i)
-                            set_color(input, output, u, i, th, width_step);
-            }
 
             // UPPER BORDER
             if (row_idx==y_firstth)
