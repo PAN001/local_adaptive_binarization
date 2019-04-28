@@ -297,7 +297,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     // cout << "total_cnt: " << total_cnt << endl;
     const dim3 block(32, 32, 1);
     // cout << "block.x: " << block.x << endl;
-    int gridX = (total_cnt + block.x - 1) / block.x;
+    int gridX = (r_total_cnt + block.x - 1) / block.x;
     int gridY = (c_total_cnt + block.y - 1) / block.y;
     const dim3 grid(gridX, gridY, 1);
     // cout << "grid.x: " << grid.x << endl;
