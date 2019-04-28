@@ -56,38 +56,38 @@ CMAKE_SOURCE_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park
 CMAKE_BINARY_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization
 
 #=============================================================================
-# Target rules for target CMakeFiles/binarizewolfjolion.dir
+# Target rules for target CMakeFiles/binarizewolfjolion_2d.dir
 
 # All Build rule for target.
-CMakeFiles/binarizewolfjolion.dir/all:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/depend
-	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/build
+CMakeFiles/binarizewolfjolion_2d.dir/all:
+	$(MAKE) -f CMakeFiles/binarizewolfjolion_2d.dir/build.make CMakeFiles/binarizewolfjolion_2d.dir/depend
+	$(MAKE) -f CMakeFiles/binarizewolfjolion_2d.dir/build.make CMakeFiles/binarizewolfjolion_2d.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles  1 2 3
-	@echo "Built target binarizewolfjolion"
-.PHONY : CMakeFiles/binarizewolfjolion.dir/all
+	@echo "Built target binarizewolfjolion_2d"
+.PHONY : CMakeFiles/binarizewolfjolion_2d.dir/all
 
 # Include target in all.
-all: CMakeFiles/binarizewolfjolion.dir/all
+all: CMakeFiles/binarizewolfjolion_2d.dir/all
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/binarizewolfjolion.dir/rule: cmake_check_build_system
+CMakeFiles/binarizewolfjolion_2d.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles 3
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/binarizewolfjolion.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/binarizewolfjolion_2d.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles 0
-.PHONY : CMakeFiles/binarizewolfjolion.dir/rule
+.PHONY : CMakeFiles/binarizewolfjolion_2d.dir/rule
 
 # Convenience name for target.
-binarizewolfjolion: CMakeFiles/binarizewolfjolion.dir/rule
-.PHONY : binarizewolfjolion
+binarizewolfjolion_2d: CMakeFiles/binarizewolfjolion_2d.dir/rule
+.PHONY : binarizewolfjolion_2d
 
 # clean rule for target.
-CMakeFiles/binarizewolfjolion.dir/clean:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/clean
-.PHONY : CMakeFiles/binarizewolfjolion.dir/clean
+CMakeFiles/binarizewolfjolion_2d.dir/clean:
+	$(MAKE) -f CMakeFiles/binarizewolfjolion_2d.dir/build.make CMakeFiles/binarizewolfjolion_2d.dir/clean
+.PHONY : CMakeFiles/binarizewolfjolion_2d.dir/clean
 
 # clean rule for target.
-clean: CMakeFiles/binarizewolfjolion.dir/clean
+clean: CMakeFiles/binarizewolfjolion_2d.dir/clean
 .PHONY : clean
 
 #=============================================================================

@@ -102,24 +102,24 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named binarizewolfjolion
+# Target rules for targets named binarizewolfjolion_2d
 
 # Build rule for target.
-binarizewolfjolion: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 binarizewolfjolion
-.PHONY : binarizewolfjolion
+binarizewolfjolion_2d: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 binarizewolfjolion_2d
+.PHONY : binarizewolfjolion_2d
 
 # fast build rule for target.
-binarizewolfjolion/fast:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/build
-.PHONY : binarizewolfjolion/fast
+binarizewolfjolion_2d/fast:
+	$(MAKE) -f CMakeFiles/binarizewolfjolion_2d.dir/build.make CMakeFiles/binarizewolfjolion_2d.dir/build
+.PHONY : binarizewolfjolion_2d/fast
 
 main.o: main.cpp.o
 .PHONY : main.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/main.cpp.o
+	$(MAKE) -f CMakeFiles/binarizewolfjolion_2d.dir/build.make CMakeFiles/binarizewolfjolion_2d.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -127,7 +127,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/main.cpp.i
+	$(MAKE) -f CMakeFiles/binarizewolfjolion_2d.dir/build.make CMakeFiles/binarizewolfjolion_2d.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -135,7 +135,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/main.cpp.s
+	$(MAKE) -f CMakeFiles/binarizewolfjolion_2d.dir/build.make CMakeFiles/binarizewolfjolion_2d.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 timing.o: timing.cpp.o
@@ -143,7 +143,7 @@ timing.o: timing.cpp.o
 
 # target to build an object file
 timing.cpp.o:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/timing.cpp.o
+	$(MAKE) -f CMakeFiles/binarizewolfjolion_2d.dir/build.make CMakeFiles/binarizewolfjolion_2d.dir/timing.cpp.o
 .PHONY : timing.cpp.o
 
 timing.i: timing.cpp.i
@@ -151,7 +151,7 @@ timing.i: timing.cpp.i
 
 # target to preprocess a source file
 timing.cpp.i:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/timing.cpp.i
+	$(MAKE) -f CMakeFiles/binarizewolfjolion_2d.dir/build.make CMakeFiles/binarizewolfjolion_2d.dir/timing.cpp.i
 .PHONY : timing.cpp.i
 
 timing.s: timing.cpp.s
@@ -159,7 +159,7 @@ timing.s: timing.cpp.s
 
 # target to generate assembly for a file
 timing.cpp.s:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/timing.cpp.s
+	$(MAKE) -f CMakeFiles/binarizewolfjolion_2d.dir/build.make CMakeFiles/binarizewolfjolion_2d.dir/timing.cpp.s
 .PHONY : timing.cpp.s
 
 # Help Target
@@ -168,7 +168,7 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... binarizewolfjolion"
+	@echo "... binarizewolfjolion_2d"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... main.o"
