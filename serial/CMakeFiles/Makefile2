@@ -50,44 +50,44 @@ EQUALS = =
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization
+CMAKE_SOURCE_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/serial
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization
+CMAKE_BINARY_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/serial
 
 #=============================================================================
-# Target rules for target CMakeFiles/binarizewolfjolion_sauvola.dir
+# Target rules for target CMakeFiles/binarizewolfjolion.dir
 
 # All Build rule for target.
-CMakeFiles/binarizewolfjolion_sauvola.dir/all:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion_sauvola.dir/build.make CMakeFiles/binarizewolfjolion_sauvola.dir/depend
-	$(MAKE) -f CMakeFiles/binarizewolfjolion_sauvola.dir/build.make CMakeFiles/binarizewolfjolion_sauvola.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles  1 2 3
-	@echo "Built target binarizewolfjolion_sauvola"
-.PHONY : CMakeFiles/binarizewolfjolion_sauvola.dir/all
+CMakeFiles/binarizewolfjolion.dir/all:
+	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/depend
+	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/serial/CMakeFiles  1 2
+	@echo "Built target binarizewolfjolion"
+.PHONY : CMakeFiles/binarizewolfjolion.dir/all
 
 # Include target in all.
-all: CMakeFiles/binarizewolfjolion_sauvola.dir/all
+all: CMakeFiles/binarizewolfjolion.dir/all
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/binarizewolfjolion_sauvola.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles 3
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/binarizewolfjolion_sauvola.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles 0
-.PHONY : CMakeFiles/binarizewolfjolion_sauvola.dir/rule
+CMakeFiles/binarizewolfjolion.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/serial/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/binarizewolfjolion.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/serial/CMakeFiles 0
+.PHONY : CMakeFiles/binarizewolfjolion.dir/rule
 
 # Convenience name for target.
-binarizewolfjolion_sauvola: CMakeFiles/binarizewolfjolion_sauvola.dir/rule
-.PHONY : binarizewolfjolion_sauvola
+binarizewolfjolion: CMakeFiles/binarizewolfjolion.dir/rule
+.PHONY : binarizewolfjolion
 
 # clean rule for target.
-CMakeFiles/binarizewolfjolion_sauvola.dir/clean:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion_sauvola.dir/build.make CMakeFiles/binarizewolfjolion_sauvola.dir/clean
-.PHONY : CMakeFiles/binarizewolfjolion_sauvola.dir/clean
+CMakeFiles/binarizewolfjolion.dir/clean:
+	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/clean
+.PHONY : CMakeFiles/binarizewolfjolion.dir/clean
 
 # clean rule for target.
-clean: CMakeFiles/binarizewolfjolion_sauvola.dir/clean
+clean: CMakeFiles/binarizewolfjolion.dir/clean
 .PHONY : clean
 
 #=============================================================================

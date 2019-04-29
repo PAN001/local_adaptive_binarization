@@ -42,10 +42,10 @@ EQUALS = =
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization
+CMAKE_SOURCE_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/serial
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization
+CMAKE_BINARY_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/serial
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -72,9 +72,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/serial/CMakeFiles /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/serial/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/serial/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -102,48 +102,48 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named binarizewolfjolion_sauvola
+# Target rules for targets named binarizewolfjolion
 
 # Build rule for target.
-binarizewolfjolion_sauvola: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 binarizewolfjolion_sauvola
-.PHONY : binarizewolfjolion_sauvola
+binarizewolfjolion: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 binarizewolfjolion
+.PHONY : binarizewolfjolion
 
 # fast build rule for target.
-binarizewolfjolion_sauvola/fast:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion_sauvola.dir/build.make CMakeFiles/binarizewolfjolion_sauvola.dir/build
-.PHONY : binarizewolfjolion_sauvola/fast
+binarizewolfjolion/fast:
+	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/build
+.PHONY : binarizewolfjolion/fast
 
-main.o: main.cpp.o
-.PHONY : main.o
+binarizewolfjolion.o: binarizewolfjolion.cpp.o
+.PHONY : binarizewolfjolion.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion_sauvola.dir/build.make CMakeFiles/binarizewolfjolion_sauvola.dir/main.cpp.o
-.PHONY : main.cpp.o
+binarizewolfjolion.cpp.o:
+	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/binarizewolfjolion.cpp.o
+.PHONY : binarizewolfjolion.cpp.o
 
-main.i: main.cpp.i
-.PHONY : main.i
+binarizewolfjolion.i: binarizewolfjolion.cpp.i
+.PHONY : binarizewolfjolion.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion_sauvola.dir/build.make CMakeFiles/binarizewolfjolion_sauvola.dir/main.cpp.i
-.PHONY : main.cpp.i
+binarizewolfjolion.cpp.i:
+	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/binarizewolfjolion.cpp.i
+.PHONY : binarizewolfjolion.cpp.i
 
-main.s: main.cpp.s
-.PHONY : main.s
+binarizewolfjolion.s: binarizewolfjolion.cpp.s
+.PHONY : binarizewolfjolion.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion_sauvola.dir/build.make CMakeFiles/binarizewolfjolion_sauvola.dir/main.cpp.s
-.PHONY : main.cpp.s
+binarizewolfjolion.cpp.s:
+	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/binarizewolfjolion.cpp.s
+.PHONY : binarizewolfjolion.cpp.s
 
 timing.o: timing.cpp.o
 .PHONY : timing.o
 
 # target to build an object file
 timing.cpp.o:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion_sauvola.dir/build.make CMakeFiles/binarizewolfjolion_sauvola.dir/timing.cpp.o
+	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/timing.cpp.o
 .PHONY : timing.cpp.o
 
 timing.i: timing.cpp.i
@@ -151,7 +151,7 @@ timing.i: timing.cpp.i
 
 # target to preprocess a source file
 timing.cpp.i:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion_sauvola.dir/build.make CMakeFiles/binarizewolfjolion_sauvola.dir/timing.cpp.i
+	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/timing.cpp.i
 .PHONY : timing.cpp.i
 
 timing.s: timing.cpp.s
@@ -159,7 +159,7 @@ timing.s: timing.cpp.s
 
 # target to generate assembly for a file
 timing.cpp.s:
-	$(MAKE) -f CMakeFiles/binarizewolfjolion_sauvola.dir/build.make CMakeFiles/binarizewolfjolion_sauvola.dir/timing.cpp.s
+	$(MAKE) -f CMakeFiles/binarizewolfjolion.dir/build.make CMakeFiles/binarizewolfjolion.dir/timing.cpp.s
 .PHONY : timing.cpp.s
 
 # Help Target
@@ -168,12 +168,12 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... binarizewolfjolion_sauvola"
+	@echo "... binarizewolfjolion"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... binarizewolfjolion.o"
+	@echo "... binarizewolfjolion.i"
+	@echo "... binarizewolfjolion.s"
 	@echo "... timing.o"
 	@echo "... timing.i"
 	@echo "... timing.s"
