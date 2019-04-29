@@ -15,25 +15,25 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
 
 int main (int argc, char **argv)
 {
-    char version;
     int c;
-    int winx=0, winy=0;
-    float optK=0.5;
-    char *inputname, *outputname, *versionstring;
-    // inputname = "plate.jpg";
-    inputname = "plate.jpg";
+    char *inputname, *outputname;
     outputname = "output.jpg";
 
-    // Load the image in grayscale mode
-    Mat input = imread(inputname,CV_LOAD_IMAGE_GRAYSCALE);
-
-    if ((input.rows<=0) || (input.cols<=0)) {
-        cerr << "*** ERROR: Couldn't read input image " << inputname << endl;
-        exit(1);
-    }
-
-    int N = 5;
+    int N = 6;
+    char file_names[] = {"250_250.jpg", "400_400.jpg", "500_500.jpg", "640_640.jpg", "800_800.jpg", "1024_1024.jpg"}
     for(int i = 0;i < N;i++) {
+        inputname = file_names[i];
+        cout << "=========== " << inputname << endl;
+
+        // Load the image in grayscale mode
+        Mat input = imread(inputname,CV_LOAD_IMAGE_GRAYSCALE);
+
+        if ((input.rows<=0) || (input.cols<=0)) {
+            cerr << "*** ERROR: Couldn't read input image " << inputname << endl;
+            exit(1);
+        }
+
+        
         timespec startTime;
         getTimeMonotonic(&startTime);
         // Mat im_sum, im_sum_sq;

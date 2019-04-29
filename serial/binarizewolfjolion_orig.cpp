@@ -255,59 +255,154 @@ void NiblackSauvolaWolfJolion (Mat im, Mat im_sum, Mat im_sum_sq, double min_I, 
 
 int main (int argc, char **argv)
 {
-    int c;
-    char *inputname, *outputname;
-    outputname = "output.jpg";
+	char version;
+	int c;
+	int winx=0, winy=0;
+	float optK=0.5;
+	bool didSpecifyK=false;
+	NiblackVersion versionCode;
+	char *inputname, *outputname, *versionstring;
 
-    int N = 6;
-    char file_names[] = {"250_250.jpg", "400_400.jpg", "500_500.jpg", "640_640.jpg", "800_800.jpg", "1024_1024.jpg"}
-    for(int i = 0;i < N;i++) {
-        inputname = file_names[i];
-        cout << "=========== " << inputname << endl;
+	cerr << "===========================================================\n"
+	     << "Christian Wolf, LIRIS Laboratory, Lyon, France.\n"
+		 << "christian.wolf@liris.cnrs.fr\n"
+		 << "Version " << BINARIZEWOLF_VERSION << endl
+		 << "===========================================================\n";
 
-        // Load the image in grayscale mode
-        Mat input = imread(inputname,CV_LOAD_IMAGE_GRAYSCALE);
+	// Argument processing
+	while ((c =	getopt (argc, argv,	"x:y:k:")) != EOF) {
 
-        if ((input.rows<=0) || (input.cols<=0)) {
-            cerr << "*** ERROR: Couldn't read input image " << inputname << endl;
-            exit(1);
-        }
+		switch (c) {
+
+			case 'x':
+				winx = atof(optarg);
+				break;
+
+			case 'y':
+				winy = atof(optarg);
+				break;
+
+			case 'k':
+				optK = atof(optarg);
+				didSpecifyK = true;
+				break;
+
+			case '?':
+				usage (*argv);
+				cerr << "\nProblem parsing the options!\n\n";
+				exit (1);
+		}
+	}
+
+	switch(argc-optind)
+	{
+		case 3:
+			versionstring=argv[optind];
+			inputname=argv[optind+1];
+			outputname=argv[optind+2];
+			break;
+
+		case 2:
+			versionstring=(char *) "w";
+			inputname=argv[optind];
+			outputname=argv[optind+1];
+			break;
+
+		default:
+			usage (*argv);
+			exit (1);
+	}
+
+	cerr << "Adaptive binarization\n"
+		 << "Threshold calculation: ";
+
+	// Determine the method
+	version = versionstring[0];
+	switch (version)
+	{
+		case 'n':
+			versionCode = NIBLACK;
+			cerr << "Niblack (1986)\n";
+			break;
+
+		case 's':
+			versionCode = SAUVOLA;
+			cerr << "Sauvola et al. (1997)\n";
+			break;
+
+		case 'w':
+			versionCode = WOLFJOLION;
+			cerr << "Wolf and Jolion (2001)\n";
+			break;
+
+		default:
+			usage (*argv);
+			cerr  << "\nInvalid version: '" << version << "'!";
+	}
 
 
-        timespec startTime;
-        getTimeMonotonic(&startTime);
+	cerr << "parameter k=" << optK << endl;
 
-        Mat im_sum, im_sum_sq;
-        integral(input, im_sum, im_sum_sq, CV_64F);
+	if (!didSpecifyK)
+		cerr << "Setting k to default value " << optK << endl;
 
-        timespec integralEndTime;
-        getTimeMonotonic(&integralEndTime);
-        cout << "  --cv::integral Time: " << diffclock(startTime, integralEndTime) << "ms." << endl;
 
-        timespec minMaxLocStartTime;
-        getTimeMonotonic(&minMaxLocStartTime);
-        double min_I, max_I;
-        minMaxLoc(input, &min_I, &max_I);
+    // Load the image in grayscale mode
+    Mat input = imread(inputname,CV_LOAD_IMAGE_GRAYSCALE);
 
-        timespec minMaxLocEndTime;
-        getTimeMonotonic(&minMaxLocEndTime);
-        cout << "  --cv::minMaxLoc Time: " << diffclock(minMaxLocStartTime, minMaxLocEndTime) << "ms." << endl;
 
-        // Threshold
-        Mat output (input.rows, input.cols, CV_8U);
-        // NiblackSauvolaWolfJolion (input, output, versionCode, winx, winy, optK, 128);
-        int k = 1, win = 12;
-        double sauvola_k = 0.18 * k;
-        NiblackSauvolaWolfJolion(input, im_sum, im_sum_sq, min_I, max_I, output, "s", win, win, sauvola_k);
-
-        timespec endTime;
-        getTimeMonotonic(&endTime);
-        cout << "=========== Time: " << diffclock(startTime, endTime) << "ms." << endl;
-
-        // Write the tresholded file
-        cerr << "Writing binarized image to file '" << outputname << "'.\n";
-        imwrite (outputname, output);
+    if ((input.rows<=0) || (input.cols<=0)) {
+        cerr << "*** ERROR: Couldn't read input image " << inputname << endl;
+        exit(1);
     }
+
+
+    // Treat the window size
+    if (winx==0||winy==0) {
+        cerr << "Input size: " << input.cols << "x" << input.rows << endl;
+        winy = (int) (2.0 * input.rows-1)/3;
+        winx = (int) input.cols-1 < winy ? input.cols-1 : winy;
+        // if the window is too big, than we asume that the image
+        // is not a single text box, but a document page: set
+        // the window size to a fixed constant.
+        if (winx > 100)
+            winx = winy = 40;
+        cerr << "Setting window size to [" << winx
+            << "," << winy << "].\n";
+    }
+
+    timespec startTime;
+    getTimeMonotonic(&startTime);
+
+    Mat im_sum, im_sum_sq;
+    integral(input, im_sum, im_sum_sq, CV_64F);
+
+    timespec integralEndTime;
+    getTimeMonotonic(&integralEndTime);
+    cout << "  --cv::integral Time: " << diffclock(startTime, integralEndTime) << "ms." << endl;
+
+    timespec minMaxLocStartTime;
+    getTimeMonotonic(&minMaxLocStartTime);
+    double min_I, max_I;
+    minMaxLoc(input, &min_I, &max_I);
+
+    timespec minMaxLocEndTime;
+    getTimeMonotonic(&minMaxLocEndTime);
+    cout << "  --cv::minMaxLoc Time: " << diffclock(minMaxLocStartTime, minMaxLocEndTime) << "ms." << endl;
+
+    // Threshold
+    Mat output (input.rows, input.cols, CV_8U);
+    // NiblackSauvolaWolfJolion (input, output, versionCode, winx, winy, optK, 128);
+    int k = 0, win=18;
+    NiblackSauvolaWolfJolion(input, im_sum, im_sum_sq, min_I, max_I, output, versionCode, win, win, 0.05 + (k * 0.35));
+
+    timespec endTime;
+    getTimeMonotonic(&endTime);
+    cout << "=========== Time: " << diffclock(startTime, endTime) << "ms." << endl;
+
+    // Write the tresholded file
+    cerr << "Writing binarized image to file '" << outputname << "'.\n";
+    imwrite (outputname, output);
 
     return 0;
 }
