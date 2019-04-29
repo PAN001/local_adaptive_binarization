@@ -255,7 +255,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
 
     timespec endTime;
     getTimeMonotonic(&endTime);
-    cout << "  --context creation Time: " << diffclock(cudaMallocStartTime, endTime) << "ms." << endl;
+    cout << "  --context creation Time: " << diffclock(contextStartTime, endTime) << "ms." << endl;
 
     timespec startTime;
     getTimeMonotonic(&startTime);
@@ -306,7 +306,6 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     // SAFE_CALL(cudaMalloc<float>(&d_map_m,mapBytes),"CUDA Malloc Failed");
     // SAFE_CALL(cudaMalloc<float>(&d_map_s,mapBytes),"CUDA Malloc Failed");
 
-    timespec endTime;
     getTimeMonotonic(&endTime);
     cout << "  --cudaMalloc Time: " << diffclock(cudaMallocStartTime, endTime) << "ms." << endl;
 
