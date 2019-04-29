@@ -298,7 +298,7 @@ int main (int argc, char **argv)
         // NiblackSauvolaWolfJolion (input, output, versionCode, winx, winy, optK, 128);
         int k = 1, win = 12;
         double sauvola_k = 0.18 * k;
-        NiblackSauvolaWolfJolion(input, im_sum, im_sum_sq, min_I, max_I, output, "s", win, win, sauvola_k);
+        NiblackSauvolaWolfJolion(input, im_sum, im_sum_sq, min_I, max_I, output, SAUVOLA, win, win, sauvola_k);
 
         timespec endTime;
         getTimeMonotonic(&endTime);
