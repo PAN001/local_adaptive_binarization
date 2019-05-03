@@ -36,3 +36,7 @@ endif()
 CUDA_COMPILE(CU_O binarizewolfjolion_sauvola.cu)
 add_executable(binarizewolfjolion_sauvola main.cpp timing.cpp ${CU_O})
 target_link_libraries( binarizewolfjolion_sauvola ${OpenCV_LIBS} )
+
+CUDA_COMPILE(CU_1 binarizewolfjolion.cu)
+add_executable(binarizewolfjolion main.cpp timing.cpp ${CU_1})
+target_link_libraries( binarizewolfjolion ${OpenCV_LIBS} )
