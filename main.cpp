@@ -297,7 +297,7 @@ int main (int argc, char **argv)
 
         k = 1, win = 12;
         sauvola_k = 0.18 * k;
-        NiblackSauvolaWolfJolion(input, im_sum, im_sum_sq, min_I, max_I, output, SAUVOLA, win, win, sauvola_k);
+        NiblackSauvolaWolfJolion_serial(input, im_sum, im_sum_sq, min_I, max_I, output, SAUVOLA, win, win, sauvola_k);
 
         endTime;
         getTimeMonotonic(&endTime);
