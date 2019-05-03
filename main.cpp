@@ -274,8 +274,6 @@ int main (int argc, char **argv)
         getTimeMonotonic(&endTime);
         cout << "=========== CUDA Total time: " << diffclock(startTime, endTime) << "ms." << endl;
 
-
-
         startTime;
         getTimeMonotonic(&startTime);
 
