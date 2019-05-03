@@ -19,6 +19,8 @@
 // #include <cv>
 // #include <highgui>
 #include <opencv2/opencv.hpp>
+#include "opencv2/ml/ml.hpp"
+#include "opencv2/gpu/gpu.hpp"
 #include "timing.h"
 
 using namespace std;
