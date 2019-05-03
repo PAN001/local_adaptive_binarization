@@ -57,70 +57,70 @@ static inline void _safe_cuda_call(cudaError err, const char* msg, const char* f
 
 
 
-// *************************************************************
-double calcLocalStats (Mat &im, Mat &im_sum, Mat &im_sum_sq, Mat &map_m, Mat &map_s, int winx, int winy) {    
-    timespec startTime;
-    getTimeMonotonic(&startTime);
+// // *************************************************************
+// double calcLocalStats (Mat &im, Mat &im_sum, Mat &im_sum_sq, Mat &map_m, Mat &map_s, int winx, int winy) {    
+//     timespec startTime;
+//     getTimeMonotonic(&startTime);
 
-    // Mat im_sum, im_sum_sq;
-    // cv::integral(im,im_sum,im_sum_sq,CV_64F); // TODO: no need to calculated this everytime
+//     // Mat im_sum, im_sum_sq;
+//     // cv::integral(im,im_sum,im_sum_sq,CV_64F); // TODO: no need to calculated this everytime
 
-    // timespec endTime;
-    // getTimeMonotonic(&endTime);
-    // cout << "cv::integral Time: " << diffclock(startTime, endTime) << "ms." << endl;
+//     // timespec endTime;
+//     // getTimeMonotonic(&endTime);
+//     // cout << "cv::integral Time: " << diffclock(startTime, endTime) << "ms." << endl;
 
-    // double m,s,max_s,sum,sum_sq;  
-    int wxh   = winx/2;
-    int wyh   = winy/2;
-    int x_firstth= wxh;
-    int y_lastth = im.rows-wyh-1;
-    int y_firstth= wyh;
-    double winarea = winx*winy;
+//     // double m,s,max_s,sum,sum_sq;  
+//     int wxh   = winx/2;
+//     int wyh   = winy/2;
+//     int x_firstth= wxh;
+//     int y_lastth = im.rows-wyh-1;
+//     int y_firstth= wyh;
+//     double winarea = winx*winy;
 
-    double max_s = 0;
+//     double max_s = 0;
 
-    // cout << "  --outerloop size: " << y_lastth - y_firstth << endl;
-    // cout << "  --innerloop size: " << im.cols-winx - 1 << endl;
-    for(int j = y_firstth ; j<=y_lastth; j++) { 
-        double m,s,sum,sum_sq;  
-        sum = sum_sq = 0;
+//     // cout << "  --outerloop size: " << y_lastth - y_firstth << endl;
+//     // cout << "  --innerloop size: " << im.cols-winx - 1 << endl;
+//     for(int j = y_firstth ; j<=y_lastth; j++) { 
+//         double m,s,sum,sum_sq;  
+//         sum = sum_sq = 0;
 
-        // sum of the window
-        sum = im_sum.at<double>(j-wyh+winy,winx) - im_sum.at<double>(j-wyh,winx) - im_sum.at<double>(j-wyh+winy,0) + im_sum.at<double>(j-wyh,0);
-        sum_sq = im_sum_sq.at<double>(j-wyh+winy,winx) - im_sum_sq.at<double>(j-wyh,winx) - im_sum_sq.at<double>(j-wyh+winy,0) + im_sum_sq.at<double>(j-wyh,0);
+//         // sum of the window
+//         sum = im_sum.at<double>(j-wyh+winy,winx) - im_sum.at<double>(j-wyh,winx) - im_sum.at<double>(j-wyh+winy,0) + im_sum.at<double>(j-wyh,0);
+//         sum_sq = im_sum_sq.at<double>(j-wyh+winy,winx) - im_sum_sq.at<double>(j-wyh,winx) - im_sum_sq.at<double>(j-wyh+winy,0) + im_sum_sq.at<double>(j-wyh,0);
 
-        m  = sum / winarea;
-        s  = sqrt ((sum_sq - m*sum)/winarea);
-        if (s > max_s) max_s = s;
+//         m  = sum / winarea;
+//         s  = sqrt ((sum_sq - m*sum)/winarea);
+//         if (s > max_s) max_s = s;
 
-        map_m.fset(x_firstth, j, m);
-        map_s.fset(x_firstth, j, s);
+//         map_m.fset(x_firstth, j, m);
+//         map_s.fset(x_firstth, j, s);
 
-        // Shift the window, add and remove   new/old values to the histogram
-        for(int i=1 ; i <= im.cols-winx; i++) {
-            // Remove the left old column and add the right new column
-            sum -= im_sum.at<double>(j-wyh+winy,i) - im_sum.at<double>(j-wyh,i) - im_sum.at<double>(j-wyh+winy,i-1) + im_sum.at<double>(j-wyh,i-1);
-            sum += im_sum.at<double>(j-wyh+winy,i+winx) - im_sum.at<double>(j-wyh,i+winx) - im_sum.at<double>(j-wyh+winy,i+winx-1) + im_sum.at<double>(j-wyh,i+winx-1);
+//         // Shift the window, add and remove   new/old values to the histogram
+//         for(int i=1 ; i <= im.cols-winx; i++) {
+//             // Remove the left old column and add the right new column
+//             sum -= im_sum.at<double>(j-wyh+winy,i) - im_sum.at<double>(j-wyh,i) - im_sum.at<double>(j-wyh+winy,i-1) + im_sum.at<double>(j-wyh,i-1);
+//             sum += im_sum.at<double>(j-wyh+winy,i+winx) - im_sum.at<double>(j-wyh,i+winx) - im_sum.at<double>(j-wyh+winy,i+winx-1) + im_sum.at<double>(j-wyh,i+winx-1);
 
-            sum_sq -= im_sum_sq.at<double>(j-wyh+winy,i) - im_sum_sq.at<double>(j-wyh,i) - im_sum_sq.at<double>(j-wyh+winy,i-1) + im_sum_sq.at<double>(j-wyh,i-1);
-            sum_sq += im_sum_sq.at<double>(j-wyh+winy,i+winx) - im_sum_sq.at<double>(j-wyh,i+winx) - im_sum_sq.at<double>(j-wyh+winy,i+winx-1) + im_sum_sq.at<double>(j-wyh,i+winx-1);
+//             sum_sq -= im_sum_sq.at<double>(j-wyh+winy,i) - im_sum_sq.at<double>(j-wyh,i) - im_sum_sq.at<double>(j-wyh+winy,i-1) + im_sum_sq.at<double>(j-wyh,i-1);
+//             sum_sq += im_sum_sq.at<double>(j-wyh+winy,i+winx) - im_sum_sq.at<double>(j-wyh,i+winx) - im_sum_sq.at<double>(j-wyh+winy,i+winx-1) + im_sum_sq.at<double>(j-wyh,i+winx-1);
 
-            m  = sum / winarea;
-            s  = sqrt ((sum_sq - m*sum)/winarea);
-            if (s > max_s) max_s = s;
+//             m  = sum / winarea;
+//             s  = sqrt ((sum_sq - m*sum)/winarea);
+//             if (s > max_s) max_s = s;
 
-            map_m.fset(i+wxh, j, m);
-            map_s.fset(i+wxh, j, s);
-        }
-    }
+//             map_m.fset(i+wxh, j, m);
+//             map_s.fset(i+wxh, j, s);
+//         }
+//     }
 
 
-    timespec endTime;
-    getTimeMonotonic(&endTime);
-    cout << "  --calcLocalStats Time: " << diffclock(startTime, endTime) << "ms." << endl;
+//     timespec endTime;
+//     getTimeMonotonic(&endTime);
+//     cout << "  --calcLocalStats Time: " << diffclock(startTime, endTime) << "ms." << endl;
 
-    return max_s;
-}
+//     return max_s;
+// }
 
 /**********************************************************
 * The binarization routine
