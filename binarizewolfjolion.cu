@@ -226,7 +226,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     getTimeMonotonic(&startTime);
 
     Mat im_sum, im_sum_sq;
-    cuda::integral(input, im_sum, im_sum_sq, CV_64F);
+    gpu::integral(input, im_sum, im_sum_sq, CV_64F);
 
     timespec integralEndTime;
     getTimeMonotonic(&integralEndTime);
@@ -236,7 +236,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     timespec minMaxLocStartTime;
     getTimeMonotonic(&minMaxLocStartTime);
     double min_I, max_I;
-    cuda::minMaxLoc(input, &min_I, &max_I);
+    gpu::minMaxLoc(input, &min_I, &max_I);
     timespec minMaxLocEndTime;
     getTimeMonotonic(&minMaxLocEndTime);
     cout << "  --cv::minMaxLoc Time: " << diffclock(minMaxLocStartTime, minMaxLocEndTime) << "ms." << endl;
