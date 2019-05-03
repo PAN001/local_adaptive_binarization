@@ -10,6 +10,16 @@
 using namespace std;
 using namespace cv;
 
+enum NiblackVersion
+{
+    NIBLACK=0,
+    SAUVOLA,
+    WOLFJOLION,
+};
+
+#define BINARIZEWOLF_VERSION    "2.4 (August 1st, 2014)"
+#define BINARIZEWOLF_DEFAULTDR  128
+
 void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, double k);
 
 #define uget(x,y)    at<unsigned char>(y,x)
