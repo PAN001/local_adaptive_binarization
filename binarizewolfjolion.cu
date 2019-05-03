@@ -25,7 +25,7 @@
 
 using namespace std;
 using namespace cv;
-using namespace cv::cuda;
+using namespace cv::gpu;
 
 enum NiblackVersion
 {
