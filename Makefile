@@ -60,16 +60,6 @@ edit_cache:
 edit_cache/fast: edit_cache
 .PHONY : edit_cache/fast
 
-# Special rule for the target package
-package: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool..."
-	/usr/bin/cpack --config ./CPackConfig.cmake
-.PHONY : package
-
-# Special rule for the target package
-package/fast: package
-.PHONY : package/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -200,7 +190,6 @@ help:
 	@echo "... binarizewolfjolion"
 	@echo "... binarizewolfjolion_sauvola"
 	@echo "... edit_cache"
-	@echo "... package"
 	@echo "... rebuild_cache"
 	@echo "... main.o"
 	@echo "... main.i"

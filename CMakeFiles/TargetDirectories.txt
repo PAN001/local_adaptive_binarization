@@ -1,1 +1,2 @@
+/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles/binarizewolfjolion.dir
 /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles/binarizewolfjolion_sauvola.dir
