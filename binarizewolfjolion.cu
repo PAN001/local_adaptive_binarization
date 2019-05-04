@@ -229,7 +229,12 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     getTimeMonotonic(&startTime);
 
     Mat im_sum, im_sum_sq;
-    cv::gpu::integral(input, im_sum, im_sum_sq, CV_64F);
+    integral(input, im_sum, im_sum_sq, CV_64F);
+    
+    // cv::gpu::GpuMat input_gpu;
+    // cv::gpu::GpuMat im_sum_gpu;
+    // cv::gpu::GpuMat im_sum_sq_gpu;
+    // cv::gpu::integral(input, im_sum, im_sum_sq, CV_64F);
 
     timespec integralEndTime;
     getTimeMonotonic(&integralEndTime);
