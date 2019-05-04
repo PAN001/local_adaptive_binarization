@@ -274,6 +274,12 @@ int main (int argc, char **argv)
         getTimeMonotonic(&endTime);
         cout << "=========== CUDA Total time: " << diffclock(startTime, endTime) << "ms." << endl;
 
+        std::string outputname;
+        std::stringstream ss;
+        ss << inputname << "_cuda_output.jpg";
+        outputname = ss.str();
+        imwrite(outputname, output);
+
         startTime;
         getTimeMonotonic(&startTime);
 
@@ -304,11 +310,10 @@ int main (int argc, char **argv)
         // Write the tresholded file
         // cerr << "Writing binarized image to file '" << outputname << "'.\n";
 
-        std::string outputname;
-        std::stringstream ss;
-        ss << inputname << "output.jpg";
+        ss.str("");
+        ss << inputname << "_serial_output.jpg";
         outputname = ss.str();
-        imwrite (outputname, output);
+        imwrite(outputname, output);
 
         cout << "" << endl;
         cout << "" << endl;
