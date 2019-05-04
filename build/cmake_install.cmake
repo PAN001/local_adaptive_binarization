@@ -2,7 +2,7 @@
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  SET(CMAKE_INSTALL_PREFIX "/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/baseline")
+  SET(CMAKE_INSTALL_PREFIX "/usr/local")
 ENDIF(NOT DEFINED CMAKE_INSTALL_PREFIX)
 STRING(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,7 +38,7 @@ ELSE(CMAKE_INSTALL_COMPONENT)
   SET(CMAKE_INSTALL_MANIFEST "install_manifest.txt")
 ENDIF(CMAKE_INSTALL_COMPONENT)
 
-FILE(WRITE "/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/${CMAKE_INSTALL_MANIFEST}" "")
+FILE(WRITE "/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/${CMAKE_INSTALL_MANIFEST}" "")
 FOREACH(file ${CMAKE_INSTALL_MANIFEST_FILES})
-  FILE(APPEND "/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
+  FILE(APPEND "/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
 ENDFOREACH(file)

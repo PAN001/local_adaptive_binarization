@@ -45,7 +45,7 @@ CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 CMAKE_SOURCE_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization
+CMAKE_BINARY_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -60,16 +60,6 @@ edit_cache:
 edit_cache/fast: edit_cache
 .PHONY : edit_cache/fast
 
-# Special rule for the target package
-package: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool..."
-	/usr/bin/cpack --config ./CPackConfig.cmake
-.PHONY : package
-
-# Special rule for the target package
-package/fast: package
-.PHONY : package/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -82,9 +72,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -200,7 +190,6 @@ help:
 	@echo "... binarizewolfjolion"
 	@echo "... binarizewolfjolion_sauvola"
 	@echo "... edit_cache"
-	@echo "... package"
 	@echo "... rebuild_cache"
 	@echo "... main.o"
 	@echo "... main.i"

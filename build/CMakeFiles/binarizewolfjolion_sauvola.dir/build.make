@@ -41,7 +41,7 @@ CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 CMAKE_SOURCE_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization
+CMAKE_BINARY_DIR = /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/binarizewolfjolion_sauvola.dir/depend.make
@@ -54,15 +54,15 @@ include CMakeFiles/binarizewolfjolion_sauvola.dir/flags.make
 
 CMakeFiles/cuda_compile.dir/./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o: CMakeFiles/cuda_compile.dir/cuda_compile_generated_binarizewolfjolion_sauvola.cu.o.depend
 CMakeFiles/cuda_compile.dir/./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o: CMakeFiles/cuda_compile.dir/cuda_compile_generated_binarizewolfjolion_sauvola.cu.o.cmake
-CMakeFiles/cuda_compile.dir/./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o: binarizewolfjolion_sauvola.cu
-	$(CMAKE_COMMAND) -E cmake_progress_report /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles $(CMAKE_PROGRESS_1)
+CMakeFiles/cuda_compile.dir/./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o: ../binarizewolfjolion_sauvola.cu
+	$(CMAKE_COMMAND) -E cmake_progress_report /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Building NVCC (Device) object CMakeFiles/cuda_compile.dir//./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o"
-	cd /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles/cuda_compile.dir && /usr/bin/cmake -E make_directory /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles/cuda_compile.dir//.
-	cd /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles/cuda_compile.dir && /usr/bin/cmake -D verbose:BOOL=$(VERBOSE) -D build_configuration:STRING= -D generated_file:STRING=/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles/cuda_compile.dir//./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o -D generated_cubin_file:STRING=/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles/cuda_compile.dir//./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o.cubin.txt -P /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles/cuda_compile.dir//cuda_compile_generated_binarizewolfjolion_sauvola.cu.o.cmake
+	cd /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles/cuda_compile.dir && /usr/bin/cmake -E make_directory /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles/cuda_compile.dir//.
+	cd /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles/cuda_compile.dir && /usr/bin/cmake -D verbose:BOOL=$(VERBOSE) -D build_configuration:STRING= -D generated_file:STRING=/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles/cuda_compile.dir//./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o -D generated_cubin_file:STRING=/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles/cuda_compile.dir//./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o.cubin.txt -P /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles/cuda_compile.dir//cuda_compile_generated_binarizewolfjolion_sauvola.cu.o.cmake
 
 CMakeFiles/binarizewolfjolion_sauvola.dir/main.cpp.o: CMakeFiles/binarizewolfjolion_sauvola.dir/flags.make
-CMakeFiles/binarizewolfjolion_sauvola.dir/main.cpp.o: main.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles $(CMAKE_PROGRESS_2)
+CMakeFiles/binarizewolfjolion_sauvola.dir/main.cpp.o: ../main.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/binarizewolfjolion_sauvola.dir/main.cpp.o"
 	/usr/lib64/ccache/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/binarizewolfjolion_sauvola.dir/main.cpp.o -c /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/main.cpp
 
@@ -84,8 +84,8 @@ CMakeFiles/binarizewolfjolion_sauvola.dir/main.cpp.o.provides: CMakeFiles/binari
 CMakeFiles/binarizewolfjolion_sauvola.dir/main.cpp.o.provides.build: CMakeFiles/binarizewolfjolion_sauvola.dir/main.cpp.o
 
 CMakeFiles/binarizewolfjolion_sauvola.dir/timing.cpp.o: CMakeFiles/binarizewolfjolion_sauvola.dir/flags.make
-CMakeFiles/binarizewolfjolion_sauvola.dir/timing.cpp.o: timing.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles $(CMAKE_PROGRESS_3)
+CMakeFiles/binarizewolfjolion_sauvola.dir/timing.cpp.o: ../timing.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles $(CMAKE_PROGRESS_3)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/binarizewolfjolion_sauvola.dir/timing.cpp.o"
 	/usr/lib64/ccache/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/binarizewolfjolion_sauvola.dir/timing.cpp.o -c /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/timing.cpp
 
@@ -113,7 +113,7 @@ binarizewolfjolion_sauvola_OBJECTS = \
 
 # External object files for target binarizewolfjolion_sauvola
 binarizewolfjolion_sauvola_EXTERNAL_OBJECTS = \
-"/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles/cuda_compile.dir/./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o"
+"/afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles/cuda_compile.dir/./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o"
 
 binarizewolfjolion_sauvola: CMakeFiles/binarizewolfjolion_sauvola.dir/main.cpp.o
 binarizewolfjolion_sauvola: CMakeFiles/binarizewolfjolion_sauvola.dir/timing.cpp.o
@@ -169,6 +169,6 @@ CMakeFiles/binarizewolfjolion_sauvola.dir/clean:
 .PHONY : CMakeFiles/binarizewolfjolion_sauvola.dir/clean
 
 CMakeFiles/binarizewolfjolion_sauvola.dir/depend: CMakeFiles/cuda_compile.dir/./cuda_compile_generated_binarizewolfjolion_sauvola.cu.o
-	cd /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/CMakeFiles/binarizewolfjolion_sauvola.dir/DependInfo.cmake --color=$(COLOR)
+	cd /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build /afs/cs.cmu.edu/academic/class/15418-s19/public/projects/park-chen/local_adaptive_binarization/build/CMakeFiles/binarizewolfjolion_sauvola.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/binarizewolfjolion_sauvola.dir/depend
 
