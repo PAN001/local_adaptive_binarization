@@ -303,6 +303,11 @@ int main (int argc, char **argv)
 
         // Write the tresholded file
         // cerr << "Writing binarized image to file '" << outputname << "'.\n";
+
+        std::string outputname;
+        std::stringstream ss;
+        ss << inputname << "output.jpg";
+        outputname = ss.str();
         imwrite (outputname, output);
 
         cout << "" << endl;
