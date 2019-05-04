@@ -25,7 +25,7 @@
 
 using namespace std;
 using namespace cv;
-using namespace cv::gpu;
+// using namespace cv::gpu;
 
 enum NiblackVersion
 {
@@ -229,7 +229,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     getTimeMonotonic(&startTime);
 
     Mat im_sum, im_sum_sq;
-    integral(input, im_sum, im_sum_sq, CV_64F);
+    cv::gpu::integral(input, im_sum, im_sum_sq, CV_64F);
 
     timespec integralEndTime;
     getTimeMonotonic(&integralEndTime);
@@ -239,7 +239,7 @@ void NiblackSauvolaWolfJolionWrapper(Mat input, Mat output, int winx, int winy, 
     timespec minMaxLocStartTime;
     getTimeMonotonic(&minMaxLocStartTime);
     double min_I, max_I;
-    minMaxLoc(input, &min_I, &max_I);
+    cv::gpu::minMaxLoc(input, &min_I, &max_I);
     timespec minMaxLocEndTime;
     getTimeMonotonic(&minMaxLocEndTime);
     cout << "  --cv::minMaxLoc Time: " << diffclock(minMaxLocStartTime, minMaxLocEndTime) << "ms." << endl;
