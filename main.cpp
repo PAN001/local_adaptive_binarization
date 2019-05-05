@@ -244,8 +244,8 @@ int main (int argc, char **argv)
     char *inputname, *outputname;
     outputname = "output.jpg";
 
-    int N = 9;
-    char* file_names[] = {"../50_50.jpg", "../100_100.jpg", "../200_100.jpg", "../250_250.jpg", "../400_400.jpg", "../500_500.jpg", "../640_640.jpg", "../800_800.jpg", "../1024_1024.jpg"};
+    int N = 5;
+    char* file_names[] = {"../250_250_plate_149_80.jpg", "../640_360_plate_346_172.jpg", "../1024_1024_plate_160_120.jpg", "../1920_1080_plate_1441_719.jpeg", "../2048_1536_plate_1226_612.jpg"};
     // char* file_names[] = {"produceThresholds_input.jpg"};
     for(int i = 0;i < N;i++) {
         inputname = file_names[i];

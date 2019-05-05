@@ -39,24 +39,6 @@ enum NiblackVersion
 #define fget(x,y)    at<float>(y,x)
 #define fset(x,y,v)  at<float>(y,x)=v;
 
-/**********************************************************
- * Usage
- **********************************************************/
-
-static void usage (char *com) {
-	cerr << "usage: " << com << " [ -x <winx> -y <winy> -k <parameter> ] [ version ] <inputimage> <outputimage>\n\n"
-		 << "version: n   Niblack (1986)         needs white text on black background\n"
-		 << "         s   Sauvola et al. (1997)  needs black text on white background\n"
-		 << "         w   Wolf et al. (2001)     needs black text on white background\n"
-		 << "\n"
-		 << "Default version: w (Wolf et al. 2001)\n"
-		 << "\n"
-		 << "example:\n"
-		 << "       " << com << " w in.pgm out.pgm\n"
-		 << "       " << com << " in.pgm out.pgm\n"
-		 << "       " << com << " s -x 50 -y 50 -k 0.6 in.pgm out.pgm\n";
-}
-
 // *************************************************************
 double calcLocalStats (Mat &im, Mat &im_sum, Mat &im_sum_sq, Mat &map_m, Mat &map_s, int winx, int winy) {    
     timespec startTime;
@@ -259,8 +241,8 @@ int main (int argc, char **argv)
     char *inputname, *outputname;
     outputname = "output.jpg";
 
-    int N = 6;
-    char* file_names[] = {"250_250.jpg", "400_400.jpg", "500_500.jpg", "640_640.jpg", "800_800.jpg", "1024_1024.jpg"};
+    int N = 1;
+    char* file_names[] = {"demo_plate.jpg"};
     for(int i = 0;i < N;i++) {
         inputname = file_names[i];
         cout << "=========== " << inputname << endl;
@@ -299,10 +281,19 @@ int main (int argc, char **argv)
         int k = 1, win = 12;
         double sauvola_k = 0.18 * k;
         NiblackSauvolaWolfJolion(input, im_sum, im_sum_sq, min_I, max_I, output, SAUVOLA, win, win, sauvola_k);
+        imwrite ("demo_sauvola.jpg", output);
 
         timespec endTime;
         getTimeMonotonic(&endTime);
         cout << "=========== Time: " << diffclock(startTime, endTime) << "ms." << endl;
+
+        // k = 1;
+        // NiblackSauvolaWolfJolion(input, im_sum, im_sum_sq, min_I, max_I, output, NIBLACK, win, win,  0.05 + (k * 0.35));
+        // imwrite ("demo_niblack.jpg", output);
+
+        // k = 1;
+        // NiblackSauvolaWolfJolion(input, im_sum, im_sum_sq, min_I, max_I, output, WOLFJOLION, win, win,  0.05 + (k * 0.35));
+        // imwrite ("demo_wolfjolion.jpg", output);
 
         // Write the tresholded file
         cerr << "Writing binarized image to file '" << outputname << "'.\n";
